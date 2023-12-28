@@ -1,0 +1,32 @@
+<app-headerlogo></app-headerlogo>
+<div class="authenticate-container">
+    <h1>Criar conta</h1>
+    <form action="/caminhoparaenviar" method="post">
+        <label for="user">Usuário:</label>
+        <input placeholder="Login do usuário" type="text" id="user" name="user" required>
+
+        <label for="email">Email:</label>
+        <input placeholder="Email" type="email" id="email" name="email" required>
+
+        <label for="password">Senha:</label>
+        <input placeholder="Crie sua senha" type="password" id="password" name="password" required>
+
+        <label for="confirmPassword">Confirmar senha:</label>
+        <input placeholder="Confirme sua senha" type="password" id="confirmPassword" name="confirmPassword" required>
+
+        <button class="btn-login" type="submit">Cadastrar</button>
+
+        <div class="small-size">
+            <p>Ao criar uma conta, você concorda com as Condições de Uso do Comigle.
+                Por favor verifique a Notificação de Privacidade,
+                Notificação de Cookies e a Notificação de Anúncios
+                Baseados em Interesse.</p>
+        </div>
+
+        <div class="linha-com-sombra"></div>
+    </form>
+    <div class="small">
+        <p class="margin-none">Já tem uma conta ? <a href="/login">Faça login</a></p>
+    </div>
+</div>
+<div class="linha-com-sombra"></div>

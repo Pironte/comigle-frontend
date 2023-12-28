@@ -1,1 +1,92 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.authenticate-container {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-width: 300px;
+    margin: auto;
+    padding: 0px 16px 16px;
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"]{
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid grey;
+    border-radius: 4px;
+    // max-width: 300px;
+}
+
+.btn-login {
+    padding: 10px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    width: 300px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkblue;
+}
+
+.small-size p {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+}
+
+.small {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+}
+
+.linha-com-sombra {
+    height: 44px;
+    // margin-bottom: -18px;
+    background: linear-gradient(to bottom,rgba(0,0,0,.14),rgba(0,0,0,.03) 3px,transparent);
+    zoom: 1;
+}
+
+.linha-com-sombra::after {
+    display: block;
+    width: 100%;
+    height: 44px;
+    background: linear-gradient(to right,#fff,rgba(255,255,255,0),#fff);
+    zoom: 1;
+    content: "";
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+}
+
+.margin-none {
+    margin: 0;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+h1 {
+    font-weight: 400;
+    font-size: 28px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
