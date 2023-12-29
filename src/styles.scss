@@ -1,6 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
 
+:root {
+    --light-blue: rgb(4, 182, 241);
+}
+
 body {
     font-family: 'Roboto', sans-serif;
 }
@@ -16,7 +20,7 @@ body {
 
 input[type="text"],
 input[type="email"],
-input[type="password"]{
+input[type="password"] {
     margin-bottom: 10px;
     padding: 8px;
     border: 1px solid grey;
@@ -26,16 +30,16 @@ input[type="password"]{
 
 .btn-login {
     padding: 10px;
-    background-color: blue;
-    color: white;
+    background-color: var(--light-blue);
     border: none;
     border-radius: 10px;
     width: 300px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: darkblue;
+.btn-login:hover {
+    background-color: blue;
+    color: white;
 }
 
 .small-size p {
@@ -53,7 +57,7 @@ button:hover {
 .linha-com-sombra {
     height: 44px;
     // margin-bottom: -18px;
-    background: linear-gradient(to bottom,rgba(0,0,0,.14),rgba(0,0,0,.03) 3px,transparent);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, .14), rgba(0, 0, 0, .03) 3px, transparent);
     zoom: 1;
 }
 
@@ -61,7 +65,7 @@ button:hover {
     display: block;
     width: 100%;
     height: 44px;
-    background: linear-gradient(to right,#fff,rgba(255,255,255,0),#fff);
+    background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0), #fff);
     zoom: 1;
     content: "";
 }
@@ -89,4 +93,10 @@ h1 {
     font-size: 28px;
     margin-top: 8px;
     margin-bottom: 12px;
+}
+
+.img-header {
+    width: 200px;
+    height: 50px;
+    padding-bottom: 18px;
 }
