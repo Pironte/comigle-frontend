@@ -18,6 +18,10 @@ export const routes: Routes = [
     {
       path: 'login',
       loadComponent: () => import('./components/login/login.component').then(p => p.LoginComponent)
+    },
+    {
+      path: 'video',
+      loadComponent: () => import('./components/videochat/videochat.component').then(p => p.VideochatComponent)
     }
   ];
 
