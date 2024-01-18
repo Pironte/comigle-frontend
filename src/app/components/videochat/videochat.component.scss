@@ -1,0 +1,140 @@
+.container {
+    background: linear-gradient(180deg, #000 0%, #000516 21.72%, #0E1F57 100%);
+    height: 100vh;
+}
+
+.container header img {
+    width: 336px;
+    height: 134px;
+}
+
+.container h1 {
+    color: white;
+}
+
+.header-container {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.header-container .header-text {
+    position: absolute;
+    left: 46%;
+    top: 40%;
+}
+
+.camera-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    height: 35vh;
+}
+
+.user1-camera {
+    margin-right: 50px;
+}
+
+.userCamera {
+    width: 100%;
+    height: 100%; /* Ajuste conforme necessário */
+    // max-width: 600px; /* Ajuste conforme necessário */
+    border: 1px solid #ccc;
+}
+
+.chat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 45vh;
+    gap: 20px;
+}
+
+.chat-container {
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    margin-top: 18px;
+    width: 40%;
+    height: 80%;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.chat-input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.send-button {
+    padding: 10px 10px;
+    border: none;
+    background-color: #717192;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    position: absolute;
+    height: 80%;
+    right: 32%;
+    top: 22%;
+}
+
+.send-button:hover {
+    background-color: #0056b3;
+}
+
+.chat-message {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+}
+
+/* Estilização para diferenciar mensagens enviadas e recebidas */
+.chat-message.sent {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
+}
+
+.chat-message.received {
+    align-self: flex-start;
+    background-color: #f1f1f1;
+}
+
+.sendButton-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.sendButton-container input {
+    width: 30%;
+    height: 70%;
+    margin-right: 10px;
+}
+
+.stop-button {
+    padding: 10px 10px;
+    border: none;
+    background-color: #961107;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    position: absolute;
+    height: 80%;
+    right: 66%;
+    top: 22%;
+}

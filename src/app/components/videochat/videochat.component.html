@@ -1,1 +1,31 @@
-<p>videochat works!</p>
+<div class="container">
+    <header>
+        <div class="header-container">
+            <img src="assets/gif/Logo_Animada.gif" alt="">
+            <div class="header-text">
+                <h1>Bora Conversar ?</h1>
+            </div>
+            <button>Login</button>
+        </div>
+    </header>
+    <div class="camera-container">
+        <div class="user1-camera">
+            <video class="userCamera" autoplay playsinline></video>
+        </div>
+        <div class="user2-camer">
+            <video class="userCamera" autoplay playsinline></video>
+        </div>
+    </div>
+    <div class="chat">
+        <div id="chatContainer" class="chat-container">
+            <div id="chatBox" class="chat-box">
+                <!-- Mensagens serão adicionadas aqui dinamicamente -->
+            </div>
+        </div>
+        <div class="sendButton-container">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Digite sua mensagem..." />
+            <button id="sendButton" class="send-button">Enviar</button>
+            <button id="stopButton" class="stop-button">PARAR</button>
+        </div>
+    </div>
+</div>
