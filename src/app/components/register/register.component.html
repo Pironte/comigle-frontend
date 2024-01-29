@@ -2,20 +2,20 @@
     <app-headerlogo></app-headerlogo>
     <div class="authenticate-container">
         <h1>Criar conta</h1>
-        <form action="/caminhoparaenviar" method="post">
+        <form [formGroup]="registerForm">
             <label for="user">Usuário:</label>
-            <input placeholder="Login do usuário" type="text" id="user" name="user" required>
+            <input formControlName="username" placeholder="Login do usuário" type="text" id="user" name="user" required>
     
             <label for="email">Email:</label>
-            <input placeholder="Email" type="email" id="email" name="email" required>
+            <input formControlName="email" placeholder="Email" type="email" id="email" name="email" required>
     
             <label for="password">Senha:</label>
-            <input placeholder="Crie sua senha" type="password" id="password" name="password" required>
+            <input formControlName="password" placeholder="Crie sua senha" type="password" id="password" name="password" required>
     
             <label for="confirmPassword">Confirmar senha:</label>
-            <input placeholder="Confirme sua senha" type="password" id="confirmPassword" name="confirmPassword" required>
+            <input formControlName="confirmPassword" placeholder="Confirme sua senha" type="password" id="confirmPassword" name="confirmPassword" required>
     
-            <button class="btn-login" type="submit">Cadastrar</button>
+            <button (click)="register()" class="btn-login" type="submit">Cadastrar</button>
     
             <div class="small-size">
                 <p>Ao criar uma conta, você concorda com as Condições de Uso do Comigle.

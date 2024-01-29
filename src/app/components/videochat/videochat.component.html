@@ -19,12 +19,12 @@
     <div class="chat">
         <div id="chatContainer" class="chat-container">
             <div id="chatBox" class="chat-box">
-                <!-- Mensagens serão adicionadas aqui dinamicamente -->
+                <div *ngFor="let message of messages">{{ message }}</div>
             </div>
         </div>
         <div class="sendButton-container">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Digite sua mensagem..." />
-            <button id="sendButton" class="send-button">Enviar</button>
+            <input type="text" [(ngModel)]="newMessage" id="chatInput" class="chat-input" placeholder="Digite sua mensagem..." />
+            <button id="sendButton" class="send-button" (click)="sendMessage()">Enviar</button>
             <button id="stopButton" class="stop-button">PARAR</button>
         </div>
     </div>

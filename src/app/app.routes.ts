@@ -1,5 +1,9 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
+import { VideochatComponent } from './components/videochat/videochat.component';
+import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
 
 export const routes: Routes = [
     {
@@ -13,15 +17,19 @@ export const routes: Routes = [
     },
     {
       path: 'register',
-      loadComponent: () => import('./components/register/register.component').then(p => p.RegisterComponent)
+      component: RegisterComponent
     },
     {
       path: 'login',
-      loadComponent: () => import('./components/login/login.component').then(p => p.LoginComponent)
+      component: LoginComponent
     },
     {
       path: 'video',
-      loadComponent: () => import('./components/videochat/videochat.component').then(p => p.VideochatComponent)
+      component: VideochatComponent
+    },
+    {
+      path: 'forgetpassword',
+      component: ForgetPasswordComponent
     }
   ];
 
