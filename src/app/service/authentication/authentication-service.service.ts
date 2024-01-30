@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CreateUserRequest } from '../../models/register.models';
+import { CreateUserResponse } from '../../components/interfaces/register.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +13,8 @@ export class AuthenticationServiceService {
 
   constructor(private http: HttpClient) { }
 
-  register(username: string, email: string, password: string, confirmPassword: string): Observable<string> {
+  register(request: CreateUserRequest): Observable<CreateUserResponse> {
     const registerEndpoint = `${this.urlEndpoint}/User/Register`;
-    const body = { username, email, password, confirmPassword };
-    return this.http.post<string>(registerEndpoint, body, { responseType: 'text' as 'json' });
+    return this.http.post<CreateUserResponse>(registerEndpoint, request);
   }
 }

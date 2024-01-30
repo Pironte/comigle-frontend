@@ -3,6 +3,7 @@ import { HeaderlogoComponent } from '../header/headerlogo/headerlogo.component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationServiceService } from '../../service/authentication/authentication-service.service';
+import { CreateUserRequest } from '../../models/register.models';
 
 @Component({
   selector: 'app-register',
@@ -24,8 +25,10 @@ export class RegisterComponent {
   }
 
   register() {
-    if (this.registerForm.valid)
-      this.authService.register(this.registerForm.value.username, this.registerForm.value.email, this.registerForm.value.password, this.registerForm.value.confirmPassword).subscribe(
+    if (this.registerForm.valid) {
+      const request = new CreateUserRequest(this.registerForm.value.username, this.registerForm.value.email, this.registerForm.value.password, this.registerForm.value.confirmPassword);
+
+      this.authService.register(request).subscribe(
         {
           next: (response) => {
             // Exemplo: tratar a resposta aqui
@@ -37,5 +40,6 @@ export class RegisterComponent {
             console.error('Erro no cadastro:', err);
           }
         })
+    }
   }
 }
