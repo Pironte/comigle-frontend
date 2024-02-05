@@ -2,13 +2,26 @@
     <header>
         <div class="header-container">
             <img ngSrc="assets/gif/Logo_Animada.gif" width="672" height="268">
+            @if(userName){
+            <div class="dropdown" (mouseleave)="hideOptions()">
+                <button (click)="toggleDropdown()">{{userName}}</button>
+                @if(isOpen){
+                <div class="dropdown-content">
+                    <button>Opções</button>
+                    <button (click)="logout()">Sair</button>
+                </div>
+                }
+            </div>
+            }@else {
             <button> <a href="/login">Fazer Login</a></button>
+            }
         </div>
     </header>
     <div class="content-container">
         <div class="text-container">
             <h1>Abra as portas para o mundo.</h1>
-            <p>Explore, conecte-se e celebre a diversidade global. Cada clique em nosso chat roulette <br> abre um mundo de possibilidades e amizades além das fronteiras.</p>
+            <p>Explore, conecte-se e celebre a diversidade global. Cada clique em nosso chat roulette <br> abre um mundo
+                de possibilidades e amizades além das fronteiras.</p>
         </div>
         <div class="play-container">
             <img class="principal-image" src="assets/png/PrincipalHomeImage.png">
@@ -17,4 +30,4 @@
                 <img src="assets/svg/buttonPlay.svg" alt="">
             </button>
         </div>
-</div>
+    </div>

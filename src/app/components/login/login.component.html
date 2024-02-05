@@ -1,15 +1,22 @@
 <div class="container">
     <app-headerlogo></app-headerlogo>
+    @if(message?.message){
+    <div class="message-container">
+        <div id="message-alert" class="alert" [ngClass]="messageClass">
+            {{ message?.message }}
+        </div>
+    </div>
+    }
     <div class="authenticate-container">
         <h1>Fazer login</h1>
-        <form action="/caminhoparaenviar" method="post">
+        <form [formGroup]="loginForm">
             <label for="user">Usuário:</label>
-            <input placeholder="Login do usuário" type="text" id="user" name="user" required>
+            <input formControlName="username" placeholder="Login do usuário" type="text" id="user" name="user" required>
 
             <label for="password">Senha:</label>
-            <input placeholder="Senha do usuário" type="password" id="password" name="password" required>
+            <input formControlName="password" placeholder="Senha do usuário" type="password" id="password" name="password" required>
 
-            <button class="btn-login" type="submit">Entrar</button>
+            <button (click)="login()" class="btn-login" type="submit">Entrar</button>
 
             <div class="small-size">
                 <p>Ao continuar, você concorda com as Condições de Uso da Amazon. Por favor verifique a Notificação de

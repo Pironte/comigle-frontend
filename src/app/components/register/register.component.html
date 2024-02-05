@@ -1,29 +1,36 @@
 <div class="container">
     <app-headerlogo></app-headerlogo>
+    @if(message != null){
+    <div id="message-container" class="alert" [ngClass]="messageClass">
+        {{ message.message }}
+    </div>
+    }
     <div class="authenticate-container">
         <h1>Criar conta</h1>
         <form [formGroup]="registerForm">
             <label for="user">Usuário:</label>
             <input formControlName="username" placeholder="Login do usuário" type="text" id="user" name="user" required>
-    
+
             <label for="email">Email:</label>
             <input formControlName="email" placeholder="Email" type="email" id="email" name="email" required>
-    
+
             <label for="password">Senha:</label>
-            <input formControlName="password" placeholder="Crie sua senha" type="password" id="password" name="password" required>
-    
+            <input formControlName="password" placeholder="Crie sua senha" type="password" id="password" name="password"
+                required>
+
             <label for="confirmPassword">Confirmar senha:</label>
-            <input formControlName="confirmPassword" placeholder="Confirme sua senha" type="password" id="confirmPassword" name="confirmPassword" required>
-    
+            <input formControlName="confirmPassword" placeholder="Confirme sua senha" type="password"
+                id="confirmPassword" name="confirmPassword" required>
+
             <button (click)="register()" class="btn-login" type="submit">Cadastrar</button>
-    
+
             <div class="small-size">
                 <p>Ao criar uma conta, você concorda com as Condições de Uso do Comigle.
                     Por favor verifique a Notificação de Privacidade,
                     Notificação de Cookies e a Notificação de Anúncios
                     Baseados em Interesse.</p>
             </div>
-    
+
             <div class="linha-com-sombra"></div>
         </form>
         <div class="small">

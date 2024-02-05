@@ -11,7 +11,8 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
 }
@@ -73,9 +74,12 @@ form {
 }
 
 a {
-    color: #0090FF; /* Uma cor azul que se destaca mas ainda se encaixa no esquema de cores */
-    text-decoration: none; /* Sem sublinhado por padrão */
-    cursor: pointer; /* Muda o cursor para a mão quando passar o mouse */
+    color: #0090FF;
+    /* Uma cor azul que se destaca mas ainda se encaixa no esquema de cores */
+    text-decoration: none;
+    /* Sem sublinhado por padrão */
+    cursor: pointer;
+    /* Muda o cursor para a mão quando passar o mouse */
 }
 
 a:hover {
@@ -106,4 +110,45 @@ h1 {
 
 .authenticate-container {
     color: white;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.alert-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+.alert-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+#message-alert {
+    width: 21vh;
+}
+
+.message-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
