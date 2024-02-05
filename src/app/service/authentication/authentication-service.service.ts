@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CreateUserRequest } from '../../models/register.models';
 import { CreateUserResponse } from '../../components/interfaces/register.interface';
 import { LoginRequest } from '../../models/login.models';
 import { LoginResponse } from '../../components/interfaces/login.interface';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -14,18 +15,31 @@ export class AuthenticationServiceService {
 
   private urlEndpoint = 'https://localhost:7260';
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) { }
 
+  /**
+   * Cria usuário dentro do sistema
+   * @param request request para criação de usuário
+   * @returns resposta da criação do usuário
+   */
   register(request: CreateUserRequest): Observable<CreateUserResponse> {
     const registerEndpoint = `${this.urlEndpoint}/User/Register`;
     return this.http.post<CreateUserResponse>(registerEndpoint, request);
   }
 
+  /**
+   * Loga o usuário no sistema
+   * @param request request para logar o usuário
+   * @returns resposta com token do usuário
+   */
   login(request: LoginRequest): Observable<LoginResponse> {
     const loginEndpoint = `${this.urlEndpoint}/User/Login`;
     return this.http.post<LoginResponse>(loginEndpoint, request);
   }
 
+  /**
+   * Desloga o usuário do sistema
+   */
   logout(): void {
     const logoutEndpoint = `${this.urlEndpoint}/User/LogOut`;
     console.log(`peguei a url ${logoutEndpoint}`);
@@ -62,11 +76,14 @@ export class AuthenticationServiceService {
    * @returns uma string com o nome do usuário logado
    */
   getUserName(): string | null {
-    const token = sessionStorage.getItem('token');
-    if (token) {
-      const decoded = this.decodeToken(token);
-      return decoded ? decoded.username : null;
+    if (isPlatformBrowser(this.platformId)) {
+      const token = sessionStorage.getItem('token');
+      if (token) {
+        const decoded = this.decodeToken(token);
+        return decoded ? decoded.username : null;
+      }
     }
+
     return null;
   }
 }

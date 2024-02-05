@@ -32,6 +32,14 @@ export class LoginComponent {
     });
   }
 
+  get username() {
+    return this.loginForm.get('username')!;
+  }
+
+  get password() {
+    return this.loginForm.get('password');
+  }
+
   login() {
     if (this.loginForm.valid) {
       const request = new LoginRequest(this.loginForm.value.username, this.loginForm.value.password);

@@ -1,6 +1,7 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 import { AuthenticationServiceService } from '../../service/authentication/authentication-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -13,13 +14,12 @@ export class HomeComponent {
   userName: string | null = '';
   isOpen: boolean = false;
 
-  constructor(private authService: AuthenticationServiceService) {
+  constructor(private authService: AuthenticationServiceService, private router: Router) {
     this.userName = this.authService.getUserName();
   }
 
   toggleDropdown(): void {
     this.isOpen = !this.isOpen;
-    console.log(`estou chamando o toggle ${this.isOpen}`)
   }
 
   hideOptions() {
@@ -28,5 +28,13 @@ export class HomeComponent {
 
   logout() {
     this.authService.logout();
+  }
+
+  navigateToLogin(){
+    this.router.navigate(['/login']);
+  }
+
+  navigateToVideoChat(){
+    this.router.navigate(['/video']);
   }
 }

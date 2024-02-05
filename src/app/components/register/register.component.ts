@@ -29,6 +29,22 @@ export class RegisterComponent {
     });
   }
 
+  get userName() {
+    return this.registerForm.get('username')!;
+  }
+
+  get email() {
+    return this.registerForm.get('email')!;
+  }
+
+  get password() {
+    return this.registerForm.get('password')!;
+  }
+
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
+  }
+
   get messageClass() {
     if (!this.message) return '';
 
@@ -47,28 +63,29 @@ export class RegisterComponent {
   }
 
   register() {
-    if (this.registerForm.valid) {
-      const request = new CreateUserRequest(this.registerForm.value.username, this.registerForm.value.email, this.registerForm.value.password, this.registerForm.value.confirmPassword);
-
-      this.authService.register(request).subscribe(
-        {
-          next: (response) => {
-            // Exemplo: tratar a resposta aqui
-            if (response.success) {
-              this.messageService.setMessage("Usuário cadastrado com sucesso", MessageType.Success);
-            } else {
-              this.messageService.setMessage(response.message, MessageType.Error);
-              this.router.navigate(['/register']);
-              return;
-            }
-
-            this.router.navigate(['/login']);
-          },
-          error: (err) => {
-            // Tratar erros aqui
-            this.messageService.setMessage("Falha geral ao cadastrar usuário", MessageType.Error);
-          }
-        })
+    if (!this.registerForm.valid) {
+      return;
     }
+
+    const request = new CreateUserRequest(this.registerForm.value.username, this.registerForm.value.email, this.registerForm.value.password, this.registerForm.value.confirmPassword);
+    this.authService.register(request).subscribe(
+      {
+        next: (response) => {
+          // Exemplo: tratar a resposta aqui
+          if (response.success) {
+            this.messageService.setMessage("Usuário cadastrado com sucesso", MessageType.Success);
+          } else {
+            this.messageService.setMessage(response.message, MessageType.Error);
+            this.router.navigate(['/register']);
+            return;
+          }
+
+          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          // Tratar erros aqui
+          this.messageService.setMessage("Falha geral ao cadastrar usuário", MessageType.Error);
+        }
+      })
   }
 }

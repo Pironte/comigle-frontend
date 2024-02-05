@@ -152,3 +152,36 @@ h1 {
     justify-content: center;
     align-items: center;
 }
+
+.control-errors p {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: small;
+    // color: red;
+}
+
+/* Estiliza o campo de input com borda vermelha quando inválido */
+input.is-invalid {
+    border-color: #dc3545;
+    background-color: #fff1f0;
+}
+
+/* Estilo para a mensagem de feedback de erro */
+.invalid-feedback {
+    color: #dc3545;
+    display: block;
+}
+
+.fadeOut {
+    animation: fadeOutAnimation 4s forwards; /* ajuste a duração conforme necessário */
+  }
+  
+  @keyframes fadeOutAnimation {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }

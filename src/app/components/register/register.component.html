@@ -7,20 +7,47 @@
     }
     <div class="authenticate-container">
         <h1>Criar conta</h1>
-        <form [formGroup]="registerForm">
+        <form [formGroup]="registerForm" #formDir="ngForm">
             <label for="user">Usuário:</label>
-            <input formControlName="username" placeholder="Login do usuário" type="text" id="user" name="user" required>
+            <input formControlName="username" placeholder="Login do usuário" type="text" id="user" name="user"
+                [class.is-invalid]="userName.invalid && formDir.submitted">
+            @if(userName.invalid && formDir.submitted){
+            <div class="control-errors invalid-feedback">
+                <p>! Usuário é obrigatório</p>
+            </div>
+            }
 
             <label for="email">Email:</label>
-            <input formControlName="email" placeholder="Email" type="email" id="email" name="email" required>
+            <input formControlName="email" placeholder="Email" type="email" id="email" name="email"
+                [class.is-invalid]="userName.invalid && formDir.submitted">
+            @if(email.invalid && formDir.submitted){
+            <div class="control-errors invalid-feedback">
+                @if(email.errors?.['required']){
+                <p>! Email é obrigatório</p>
+                }
+                @else if(email.errors?.['email']){
+                <p>! Email em formato incorreto</p>
+                }
+            </div>
+            }
 
             <label for="password">Senha:</label>
-            <input formControlName="password" placeholder="Crie sua senha" type="password" id="password" name="password"
-                required>
+            <input formControlName="password" placeholder="Crie sua senha" type="password" id="password"
+                name="password" [class.is-invalid]="password.invalid && formDir.submitted">
+            @if(password.invalid && formDir.submitted){
+            <div class="control-errors invalid-feedback">
+                <p>! Senha é obrigatória</p>
+            </div>
+            }
 
             <label for="confirmPassword">Confirmar senha:</label>
             <input formControlName="confirmPassword" placeholder="Confirme sua senha" type="password"
-                id="confirmPassword" name="confirmPassword" required>
+                id="confirmPassword" name="confirmPassword" [class.is-invalid]="password.invalid && formDir.submitted">
+            @if(confirmPassword?.invalid && formDir.submitted){
+            <div class="control-errors invalid-feedback">
+                <p>! Confirmação de senha é obrigatória</p>
+            </div>
+            }
 
             <button (click)="register()" class="btn-login" type="submit">Cadastrar</button>
 

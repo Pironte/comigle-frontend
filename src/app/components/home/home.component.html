@@ -13,7 +13,7 @@
                 }
             </div>
             }@else {
-            <button> <a href="/login">Fazer Login</a></button>
+            <button (click)="navigateToLogin()"> Fazer Login</button>
             }
         </div>
     </header>
@@ -26,7 +26,7 @@
         <div class="play-container">
             <img class="principal-image" src="assets/png/PrincipalHomeImage.png">
             <h1>Iniciar Conversa Agora</h1>
-            <button class="play-button">
+            <button (click)="navigateToVideoChat()" class="play-button">
                 <img src="assets/svg/buttonPlay.svg" alt="">
             </button>
         </div>

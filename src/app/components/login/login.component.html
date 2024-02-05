@@ -1,7 +1,7 @@
 <div class="container">
     <app-headerlogo></app-headerlogo>
     @if(message?.message){
-    <div class="message-container">
+    <div class="message-container" @fade>
         <div id="message-alert" class="alert" [ngClass]="messageClass">
             {{ message?.message }}
         </div>
@@ -9,12 +9,24 @@
     }
     <div class="authenticate-container">
         <h1>Fazer login</h1>
-        <form [formGroup]="loginForm">
+        <form [formGroup]="loginForm" #formDir="ngForm">
             <label for="user">Usuário:</label>
-            <input formControlName="username" placeholder="Login do usuário" type="text" id="user" name="user" required>
+            <input formControlName="username" placeholder="Login do usuário" type="text" id="user" name="user"
+                [class.is-invalid]="username.invalid && formDir.submitted">
+            @if(username.invalid && formDir.submitted){
+            <div class="control-errors invalid-feedback">
+                <p>! Usuário é obrigatório</p>
+            </div>
+            }
 
             <label for="password">Senha:</label>
-            <input formControlName="password" placeholder="Senha do usuário" type="password" id="password" name="password" required>
+            <input formControlName="password" placeholder="Senha do usuário" type="password" id="password"
+                name="password" [class.is-invalid]="password?.invalid && formDir.submitted">
+            @if(password?.invalid && formDir.submitted){
+            <div class="control-errors invalid-feedback">
+                <p>! Senha é obrigatória</p>
+            </div>
+            }
 
             <button (click)="login()" class="btn-login" type="submit">Entrar</button>
 

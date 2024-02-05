@@ -5,7 +5,19 @@
             <div class="header-text">
                 <h1>Bora Conversar ?</h1>
             </div>
-            <button>Login</button>
+            @if(userName){
+            <div class="dropdown" (mouseleave)="hideOptions()">
+                <button (click)="toggleDropdown()">{{userName}}</button>
+                @if(isOpen){
+                <div class="dropdown-content">
+                    <button>Opções</button>
+                    <button (click)="logout()">Sair</button>
+                </div>
+                }
+            </div>
+            }@else {
+            <button> <a routerLink="/login" href="/login">Fazer Login</a></button>
+            }
         </div>
     </header>
     <div class="camera-container">
@@ -23,7 +35,8 @@
             </div>
         </div>
         <div class="sendButton-container">
-            <input type="text" [(ngModel)]="newMessage" id="chatInput" class="chat-input" placeholder="Digite sua mensagem..." />
+            <input type="text" [(ngModel)]="newMessage" id="chatInput" class="chat-input"
+                placeholder="Digite sua mensagem..." />
             <button id="sendButton" class="send-button" (click)="sendMessage()">Enviar</button>
             <button id="stopButton" class="stop-button">PARAR</button>
         </div>
