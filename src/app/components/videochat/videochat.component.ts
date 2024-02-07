@@ -1,12 +1,13 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthenticationServiceService } from '../../service/authentication/authentication-service.service';
+import { RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-videochat',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterModule, NgOptimizedImage],
   templateUrl: './videochat.component.html',
   styleUrl: './videochat.component.scss'
 })

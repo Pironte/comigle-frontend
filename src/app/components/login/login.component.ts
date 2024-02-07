@@ -28,7 +28,6 @@ export class LoginComponent {
 
     this.messageService.currentMessage.subscribe(msg => {
       this.message = msg;
-      console.log(`estou recebendo a mensagem ${msg}`);
     });
   }
 
@@ -52,7 +51,7 @@ export class LoginComponent {
               this.messageService.setMessage("Usuário/Senha incorretos", MessageType.Error);
               this.loginForm.reset();
             } else {
-              sessionStorage.setItem("token", response.token);
+              localStorage.setItem("token", response.token);
               this.router.navigate(['/home']);
             }
           },

@@ -1,8 +1,10 @@
 <div class="container">
     <app-headerlogo></app-headerlogo>
-    @if(message != null){
-    <div id="message-container" class="alert" [ngClass]="messageClass">
-        {{ message.message }}
+    @if(message?.message){
+    <div class="message-container">
+        <div id="message-alert" class="alert" [ngClass]="messageClass">
+            {{ message?.message }}
+        </div>
     </div>
     }
     <div class="authenticate-container">
@@ -32,8 +34,8 @@
             }
 
             <label for="password">Senha:</label>
-            <input formControlName="password" placeholder="Crie sua senha" type="password" id="password"
-                name="password" [class.is-invalid]="password.invalid && formDir.submitted">
+            <input formControlName="password" placeholder="Crie sua senha" type="password" id="password" name="password"
+                [class.is-invalid]="password.invalid && formDir.submitted">
             @if(password.invalid && formDir.submitted){
             <div class="control-errors invalid-feedback">
                 <p>! Senha é obrigatória</p>

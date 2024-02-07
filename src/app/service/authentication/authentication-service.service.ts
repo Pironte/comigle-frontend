@@ -44,7 +44,7 @@ export class AuthenticationServiceService {
     const logoutEndpoint = `${this.urlEndpoint}/User/LogOut`;
     console.log(`peguei a url ${logoutEndpoint}`);
     // Obter o token do sessionStorage
-    const token = sessionStorage.getItem('token');
+    const token = localStorage.getItem('token');
     console.log(`peguei o token ${token}`);
 
     // Se o token existir, enviar no cabeçalho da solicitação
@@ -52,7 +52,7 @@ export class AuthenticationServiceService {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.http.post(logoutEndpoint, {}, { headers: headers }).subscribe(() => {
         // Limpar o sessionStorage após o logout
-        sessionStorage.clear();
+        localStorage.clear();
         this.router.navigate(['/login']);
       });
     }
@@ -77,7 +77,7 @@ export class AuthenticationServiceService {
    */
   getUserName(): string | null {
     if (isPlatformBrowser(this.platformId)) {
-      const token = sessionStorage.getItem('token');
+      const token = localStorage.getItem('token');
       if (token) {
         const decoded = this.decodeToken(token);
         return decoded ? decoded.username : null;

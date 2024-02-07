@@ -27,6 +27,10 @@ export class RegisterComponent {
       password: new FormControl('', [Validators.required]),
       confirmPassword: new FormControl('', [Validators.required])
     });
+
+    this.messageService.currentMessage.subscribe(msg => {
+      this.message = msg;
+    });
   }
 
   get userName() {
@@ -74,13 +78,10 @@ export class RegisterComponent {
           // Exemplo: tratar a resposta aqui
           if (response.success) {
             this.messageService.setMessage("Usuário cadastrado com sucesso", MessageType.Success);
+            this.router.navigate(['/login']);
           } else {
             this.messageService.setMessage(response.message, MessageType.Error);
-            this.router.navigate(['/register']);
-            return;
           }
-
-          this.router.navigate(['/login']);
         },
         error: (err) => {
           // Tratar erros aqui

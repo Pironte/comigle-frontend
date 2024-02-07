@@ -144,6 +144,9 @@ h1 {
 }
 
 #message-alert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 21vh;
 }
 

@@ -1,7 +1,7 @@
 <div class="container">
     <app-headerlogo></app-headerlogo>
     @if(message?.message){
-    <div class="message-container" @fade>
+    <div class="message-container">
         <div id="message-alert" class="alert" [ngClass]="messageClass">
             {{ message?.message }}
         </div>
