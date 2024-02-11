@@ -1,7 +1,8 @@
 <div class="container">
     <header>
         <div class="header-container">
-            <a routerLink="/home" routerLinkActive="active"><img class="img-header" ngSrc="assets/gif/Logo_Animada.gif" width="334" height="134" alt=""></a>
+            <a routerLink="/home" routerLinkActive="active"><img class="img-header" ngSrc="assets/gif/Logo_Animada.gif"
+                    width="334" height="134" alt=""></a>
             <div class="header-text">
                 <h1>Bora Conversar ?</h1>
             </div>
@@ -11,7 +12,7 @@
                 @if(isOpen){
                 <div class="dropdown-content">
                     <button>Opções</button>
-                    <button (click)="logout()">Sair</button>
+                    <button (click)="this.authService.logout();">Sair</button>
                 </div>
                 }
             </div>

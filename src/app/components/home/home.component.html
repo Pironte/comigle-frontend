@@ -1,5 +1,8 @@
 <div class="container">
     <header>
+        @if(this.popupService.openPopUp()){
+        <app-popup></app-popup>
+        }
         <div class="header-container">
             <img ngSrc="assets/gif/Logo_Animada.gif" width="672" height="268">
             @if(userName){
@@ -8,12 +11,12 @@
                 @if(isOpen){
                 <div class="dropdown-content">
                     <button>Opções</button>
-                    <button (click)="logout()">Sair</button>
+                    <button (click)="this.authService.logout()">Sair</button>
                 </div>
                 }
             </div>
             }@else {
-            <button (click)="navigateToLogin()"> Fazer Login</button>
+            <button [routerLink]="['/login']"> Fazer Login</button>
             }
         </div>
     </header>
@@ -26,8 +29,9 @@
         <div class="play-container">
             <img class="principal-image" src="assets/png/PrincipalHomeImage.png">
             <h1>Iniciar Conversa Agora</h1>
-            <button (click)="navigateToVideoChat()" class="play-button">
+            <button [routerLink]="['/video']" class="play-button">
                 <img src="assets/svg/buttonPlay.svg" alt="">
             </button>
         </div>
     </div>
+</div>

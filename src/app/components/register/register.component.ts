@@ -6,7 +6,6 @@ import { AuthenticationServiceService } from '../../service/authentication/authe
 import { CreateUserRequest } from '../../models/register.models';
 import { MessageService } from '../../service/message/message.service';
 import { MessageType } from '../enums/level.enum';
-import { Message } from '../../models/message.models';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,54 +17,20 @@ import { CommonModule } from '@angular/common';
 })
 export class RegisterComponent {
   registerForm!: FormGroup;
-  message: Message | null = null;
 
-  constructor(private authService: AuthenticationServiceService, private router: Router, private messageService: MessageService) {
+  constructor(private authService: AuthenticationServiceService, private router: Router, public messageService: MessageService) {
+    // Abaixo está a inicialização do formulário e suas respectivas validações
     this.registerForm = new FormGroup({
       username: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
       confirmPassword: new FormControl('', [Validators.required])
     });
-
-    this.messageService.currentMessage.subscribe(msg => {
-      this.message = msg;
-    });
   }
 
-  get userName() {
-    return this.registerForm.get('username')!;
-  }
-
-  get email() {
-    return this.registerForm.get('email')!;
-  }
-
-  get password() {
-    return this.registerForm.get('password')!;
-  }
-
-  get confirmPassword() {
-    return this.registerForm.get('confirmPassword');
-  }
-
-  get messageClass() {
-    if (!this.message) return '';
-
-    switch (this.message.type) {
-      case MessageType.Success:
-        return 'alert-success';
-      case MessageType.Error:
-        return 'alert-danger';
-      case MessageType.Warning:
-        return 'alert-warning';
-      case MessageType.Info:
-        return 'alert-info';
-      default:
-        return '';
-    }
-  }
-
+  /**
+   * Função de cadastramento que chama o register do serivço de autenticação, tem suporte para tratamento de erros
+   */
   register() {
     if (!this.registerForm.valid) {
       return;
@@ -88,5 +53,40 @@ export class RegisterComponent {
           this.messageService.setMessage("Falha geral ao cadastrar usuário", MessageType.Error);
         }
       })
+  }
+
+  // Get dinâmico para descobrir se o tipo da classe é: sucesso, erro, warning ou info
+  get messageClass() {
+    if (this.messageService.messageSource().type == MessageType.None) return '';
+
+    switch (this.messageService.messageSource().type) {
+      case MessageType.Success:
+        return 'alert-success';
+      case MessageType.Error:
+        return 'alert-danger';
+      case MessageType.Warning:
+        return 'alert-warning';
+      case MessageType.Info:
+        return 'alert-info';
+      default:
+        return '';
+    }
+  }
+
+  // Aqui ficam os gets do formulário, que são utilizados no html para checar erros e exibir para o usuário
+  get userName() {
+    return this.registerForm.get('username')!;
+  }
+
+  get email() {
+    return this.registerForm.get('email')!;
+  }
+
+  get password() {
+    return this.registerForm.get('password')!;
+  }
+
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
   }
 }

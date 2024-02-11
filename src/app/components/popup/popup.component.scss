@@ -1,0 +1,45 @@
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    background: linear-gradient(180deg, #04012c 0%, #0b0650 100%);
+  }
+
+  .modal-content h1 {
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 117.7%;
+    letter-spacing: -1.38px;
+    color: white;
+    background-clip: text;
+    -webkit-background-clip: text;
+    flex-shrink: 0;
+  }
+  
+  .close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close-btn:hover,
+  .close-btn:focus {
+    color: rgb(101, 92, 177);
+    text-decoration: none;
+    cursor: pointer;
+  }

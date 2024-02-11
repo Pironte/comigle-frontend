@@ -40,8 +40,6 @@
 .userCamera {
     width: 100%;
     height: 100%;
-    /* Ajuste conforme necessário */
-    // max-width: 600px; /* Ajuste conforme necessário */
     border: 1px solid #ccc;
 }
 
@@ -54,9 +52,6 @@
 }
 
 .chat-container {
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
     margin-top: 18px;
     width: 40%;
     height: 80%;
@@ -152,12 +147,10 @@
     background: #FFF;
     color: #146BC4;
     text-align: right;
-    // font-family: Source Sans Pro;
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
     line-height: 158.7%;
-    /* 22.218px */
     letter-spacing: -0.42px;
     height: 50px;
 }

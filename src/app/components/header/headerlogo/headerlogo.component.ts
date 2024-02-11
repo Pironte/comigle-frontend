@@ -9,6 +9,4 @@ import { RouterModule } from '@angular/router';
   templateUrl: './headerlogo.component.html',
   styleUrl: './headerlogo.component.scss'
 })
-export class HeaderlogoComponent {
-
-}
+export class HeaderlogoComponent { }

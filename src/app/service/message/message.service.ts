@@ -1,25 +1,21 @@
-import { Injectable, NgZone } from '@angular/core';
-import { Message } from '../../models/message.models';
+import { Injectable, signal } from '@angular/core';
 import { MessageType } from '../../components/enums/level.enum';
-import { BehaviorSubject } from 'rxjs';
+import { Message } from '../../models/message.models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
-  private messageSource = new BehaviorSubject<{ message: string, type: MessageType } | null>(null);
-  currentMessage = this.messageSource.asObservable();
-
-  constructor() {}
-
+  messageSource = signal<Message>(new Message('', MessageType.None));
+  
   setMessage(message: string, type: MessageType) {
-    this.messageSource.next({ message, type });
+    this.messageSource.set({ message, type });
     setTimeout(() => {
       this.clearMessage();
     }, 4000);
   }
 
   clearMessage() {
-    this.messageSource.next(null);
+    this.messageSource.set(new Message('', MessageType.None))
   }
 }

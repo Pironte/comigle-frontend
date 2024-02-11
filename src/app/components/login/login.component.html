@@ -1,9 +1,9 @@
 <div class="container">
     <app-headerlogo></app-headerlogo>
-    @if(message?.message){
+    @if(this.messageService.messageSource().message){
     <div class="message-container">
         <div id="message-alert" class="alert" [ngClass]="messageClass">
-            {{ message?.message }}
+            {{ this.messageService.messageSource().message }}
         </div>
     </div>
     }
@@ -38,9 +38,9 @@
             <div class="linha-com-sombra"></div>
         </form>
         <div class="small">
-            <p class="margin-none">É novo aqui ? <a href="/register">Cadastre-se</a> </p>
+            <p class="margin-none">É novo aqui ? <a [routerLink]="['/register']">Cadastre-se</a> </p>
             ou
-            <p>Esqueceu a senha ? clique <a href="/forgetpassword">aqui</a></p>
+            <p>Esqueceu a senha ? clique <a [routerLink]="['/forgetpassword']">aqui</a></p>
         </div>
     </div>
     <div class="linha-com-sombra"></div>

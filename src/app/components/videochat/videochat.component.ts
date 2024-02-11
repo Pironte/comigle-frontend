@@ -2,7 +2,7 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthenticationServiceService } from '../../service/authentication/authentication-service.service';
-import { RouterLink, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-videochat',
@@ -17,11 +17,13 @@ export class VideochatComponent {
   userName: string | null = '';
   isOpen: boolean = false;
 
-  constructor(private authService: AuthenticationServiceService) {
+  constructor(public authService: AuthenticationServiceService) {
     this.userName = this.authService.getUserName();
-    console.log(`peguei o nome de usuario ${this.userName}`)
   }
 
+  /**
+   * Método que se encarrega de enviar um array de mensagens enviadas para o HTML
+   */
   sendMessage(): void {
     if (this.newMessage.trim() !== '') {
       this.messages.push(`${this.userName}: ${this.newMessage}`);
@@ -35,9 +37,5 @@ export class VideochatComponent {
 
   hideOptions() {
     this.isOpen = false;
-  }
-
-  logout() {
-    this.authService.logout();
   }
 }

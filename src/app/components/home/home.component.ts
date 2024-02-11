@@ -1,12 +1,14 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 import { AuthenticationServiceService } from '../../service/authentication/authentication-service.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { PopupComponent } from '../popup/popup.component';
+import { PopupService } from '../../service/popup/popup.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NgOptimizedImage],
+  imports: [NgOptimizedImage, PopupComponent, RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -14,7 +16,7 @@ export class HomeComponent {
   userName: string | null = '';
   isOpen: boolean = false;
 
-  constructor(private authService: AuthenticationServiceService, private router: Router) {
+  constructor(public authService: AuthenticationServiceService, private router: Router, public popupService: PopupService) {
     this.userName = this.authService.getUserName();
   }
 
@@ -24,17 +26,5 @@ export class HomeComponent {
 
   hideOptions() {
     this.isOpen = false;
-  }
-
-  logout() {
-    this.authService.logout();
-  }
-
-  navigateToLogin(){
-    this.router.navigate(['/login']);
-  }
-
-  navigateToVideoChat(){
-    this.router.navigate(['/video']);
   }
 }
