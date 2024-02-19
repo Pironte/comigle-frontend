@@ -42,35 +42,17 @@ export class RegisterComponent {
         next: (response) => {
           // Exemplo: tratar a resposta aqui
           if (response.success) {
-            this.messageService.setMessage("Usuário cadastrado com sucesso", MessageType.Success);
+            this.messageService.setMessage("Usuário cadastrado com sucesso", MessageType.Success, 4000);
             this.router.navigate(['/login']);
           } else {
-            this.messageService.setMessage(response.message, MessageType.Error);
+            this.messageService.setMessage(response.message, MessageType.Error, 4000);
           }
         },
         error: (err) => {
           // Tratar erros aqui
-          this.messageService.setMessage("Falha geral ao cadastrar usuário", MessageType.Error);
+          this.messageService.setMessage("Falha geral ao cadastrar usuário", MessageType.Error, 4000);
         }
       })
-  }
-
-  // Get dinâmico para descobrir se o tipo da classe é: sucesso, erro, warning ou info
-  get messageClass() {
-    if (this.messageService.messageSource().type == MessageType.None) return '';
-
-    switch (this.messageService.messageSource().type) {
-      case MessageType.Success:
-        return 'alert-success';
-      case MessageType.Error:
-        return 'alert-danger';
-      case MessageType.Warning:
-        return 'alert-warning';
-      case MessageType.Info:
-        return 'alert-info';
-      default:
-        return '';
-    }
   }
 
   // Aqui ficam os gets do formulário, que são utilizados no html para checar erros e exibir para o usuário
@@ -87,6 +69,6 @@ export class RegisterComponent {
   }
 
   get confirmPassword() {
-    return this.registerForm.get('confirmPassword');
+    return this.registerForm.get('confirmPassword')!;
   }
 }

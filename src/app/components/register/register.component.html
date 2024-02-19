@@ -2,7 +2,7 @@
     <app-headerlogo></app-headerlogo>
     @if(messageService.messageSource().message){
     <div class="message-container">
-        <div id="message-alert" class="alert" [ngClass]="messageClass">
+        <div id="message-alert" class="alert" [ngClass]="this.messageService.messageClass">
             {{ messageService.messageSource().message }}
         </div>
     </div>
@@ -45,7 +45,7 @@
             <label for="confirmPassword">Confirmar senha:</label>
             <input formControlName="confirmPassword" placeholder="Confirme sua senha" type="password"
                 id="confirmPassword" name="confirmPassword" [class.is-invalid]="password.invalid && formDir.submitted">
-            @if(confirmPassword?.invalid && formDir.submitted){
+            @if(confirmPassword.invalid && formDir.submitted){
             <div class="control-errors invalid-feedback">
                 <p>! Confirmação de senha é obrigatória</p>
             </div>

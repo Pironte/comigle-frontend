@@ -38,7 +38,7 @@ export class LoginComponent {
           next: (response) => {
             // Exemplo: tratar a resposta aqui
             if (!response.success) {
-              this.messageService.setMessage("Usuário/Senha incorretos", MessageType.Error);
+              this.messageService.setMessage("Usuário/Senha incorretos", MessageType.Error, 4000);
             } else {
               localStorage.setItem("token", response.token);
               this.router.navigate(['/home']);
@@ -46,27 +46,9 @@ export class LoginComponent {
           },
           error: (err) => {
             // Tratar erros aqui
-            this.messageService.setMessage("Falha geral ao cadastrar usuário", MessageType.Error);
+            this.messageService.setMessage("Falha geral ao fazer login", MessageType.Error, 4000);
           }
         })
-    }
-  }
-
-  // Get dinâmico das classes que serão exibidas em caso de : sucesso, erro, warning e info
-  get messageClass() {
-    if (this.messageService.messageSource().type == MessageType.None) return '';
-
-    switch (this.messageService.messageSource().type) {
-      case MessageType.Success:
-        return 'alert-success';
-      case MessageType.Error:
-        return 'alert-danger';
-      case MessageType.Warning:
-        return 'alert-warning';
-      case MessageType.Info:
-        return 'alert-info';
-      default:
-        return '';
     }
   }
 

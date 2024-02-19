@@ -4,6 +4,7 @@ import { AuthenticationServiceService } from '../../service/authentication/authe
 import { Router, RouterModule } from '@angular/router';
 import { PopupComponent } from '../popup/popup.component';
 import { PopupService } from '../../service/popup/popup.service';
+import { SignalrService } from '../../service/chathub/signalr.service';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,7 @@ import { PopupService } from '../../service/popup/popup.service';
 export class HomeComponent {
   userName: string | null = '';
   isOpen: boolean = false;
+  rtcConnection!: RTCPeerConnection | undefined;
 
   constructor(public authService: AuthenticationServiceService, private router: Router, public popupService: PopupService) {
     this.userName = this.authService.getUserName();

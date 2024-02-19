@@ -7,6 +7,8 @@ import { LoginRequest } from '../../models/login.models';
 import { LoginResponse } from '../../components/interfaces/login.interface';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { ForgetPasswordResponse } from '../../components/interfaces/forgetPassword.interface';
+import { ResetPasswordRequest } from '../../models/reset-password.models';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +37,22 @@ export class AuthenticationServiceService {
   login(request: LoginRequest): Observable<LoginResponse> {
     const loginEndpoint = `${this.urlEndpoint}/User/Login`;
     return this.http.post<LoginResponse>(loginEndpoint, request);
+  }
+
+  /**
+   * Realiza o procedimento de recuperação de senha
+   * @param userName Usuário que terá sua senha resetada
+   * @returns 
+   */
+  forgetPassword(userName: string): Observable<ForgetPasswordResponse> {
+    const forgetPasswordEndpoint = `${this.urlEndpoint}/User/SendEmailToResetPassword`;
+    const data = { UserName: userName, CallbackUrl: 'http://localhost:4200/resetpassword' };
+    return this.http.post<ForgetPasswordResponse>(forgetPasswordEndpoint, data);
+  }
+
+  resetPassword(request: ResetPasswordRequest): Observable<ForgetPasswordResponse> {
+    const resetPasswordEndpoint = `${this.urlEndpoint}/User/ResetPassword`;
+    return this.http.post<ForgetPasswordResponse>(resetPasswordEndpoint, request);
   }
 
   /**

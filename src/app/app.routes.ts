@@ -5,6 +5,7 @@ import { LoginComponent } from './components/login/login.component';
 import { VideochatComponent } from './components/videochat/videochat.component';
 import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
 import { authPermissionGuard } from './guards/permission.guard';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 export const routes: Routes = [
   {
@@ -32,5 +33,9 @@ export const routes: Routes = [
   {
     path: 'forgetpassword',
     component: ForgetPasswordComponent
+  },
+  {
+    path: 'resetpassword',
+    component: ResetPasswordComponent
   }
 ];

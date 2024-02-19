@@ -2,7 +2,7 @@
     <app-headerlogo></app-headerlogo>
     @if(this.messageService.messageSource().message){
     <div class="message-container">
-        <div id="message-alert" class="alert" [ngClass]="messageClass">
+        <div id="message-alert" class="alert" [ngClass]="this.messageService.messageClass">
             {{ this.messageService.messageSource().message }}
         </div>
     </div>
