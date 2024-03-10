@@ -7,12 +7,13 @@
 
 body {
     background: linear-gradient(180deg, #000 0%, #000516 21.72%, #0E1F57 100%);
-    height: 100vh;
+    height: 100%;
     font-family: 'Poppins', sans-serif;
 }
 
 html,
 body {
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -176,15 +177,17 @@ input.is-invalid {
 }
 
 .fadeOut {
-    animation: fadeOutAnimation 4s forwards; /* ajuste a duração conforme necessário */
-  }
-  
-  @keyframes fadeOutAnimation {
+    animation: fadeOutAnimation 4s forwards;
+    /* ajuste a duração conforme necessário */
+}
+
+@keyframes fadeOutAnimation {
     from {
-      opacity: 1;
+        opacity: 1;
     }
+
     to {
-      opacity: 0;
-      visibility: hidden;
+        opacity: 0;
+        visibility: hidden;
     }
-  }
+}

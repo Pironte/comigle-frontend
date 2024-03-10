@@ -3,9 +3,6 @@
         <div class="header-container">
             <a routerLink="/home" routerLinkActive="active"><img class="img-header" ngSrc="assets/gif/Logo_Animada.gif"
                     width="334" height="134" alt=""></a>
-            <div class="header-text">
-                <h1>Bora Conversar ?</h1>
-            </div>
             @if(userName){
             <div class="dropdown" (mouseleave)="hideOptions()">
                 <button (click)="toggleDropdown()">{{userName}}</button>
@@ -38,8 +35,11 @@
         <div class="sendButton-container">
             <input type="text" [(ngModel)]="newMessage" id="chatInput" class="chat-input"
                 placeholder="Digite sua mensagem..." />
-            <button id="sendButton" class="send-button" (click)="sendMessage()">Enviar</button>
-            <button id="stopButton" class="stop-button">PARAR</button>
+            <!-- <button id="sendButton" class="send-button" (click)="sendMessage()">Enviar</button> -->
+            <button (click)="disconnect()" >PARAR</button>
+            <button (click)="muteAudio()" class="=stop-button">Mutar audio</button>
+            <button (click)="unMuteAudio()" class="=stop-button">Desmutar audio</button>
+            <button (click)="nextPeer()" class="=stop-button">Próximo</button>
         </div>
     </div>
 </div>

@@ -5,6 +5,7 @@ import { AuthenticationServiceService } from './service/authentication/authentic
 import { MessageService } from './service/message/message.service';
 import { PopupService } from './service/popup/popup.service';
 import { SignalrService } from './service/chathub/signalr.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId))
-      this.signalrService.startConnection('https://localhost:7260/chatHub');
+      this.signalrService.startConnection(`${environment.apiUrl}/chatHub`);
   }
 }

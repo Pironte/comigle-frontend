@@ -2,7 +2,7 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthenticationServiceService } from '../../service/authentication/authentication-service.service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SignalrService } from '../../service/chathub/signalr.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class VideochatComponent implements OnInit {
   rtcConnection!: RTCPeerConnection | undefined;
   localStream!: MediaStream;
 
-  constructor(public authService: AuthenticationServiceService, private signalrService: SignalrService) {
+  constructor(public authService: AuthenticationServiceService, private signalrService: SignalrService, private router: Router) {
     this.userName = this.authService.getUserName();
   }
 
@@ -66,10 +66,13 @@ export class VideochatComponent implements OnInit {
   async signalindOnReceive() {
     this.signalrService.hubConnection.on("Receive", async (data) => {
       var message = JSON.parse(data);
+      console.log(message);
+
+      if (this.rtcConnection?.connectionState == 'connected')
+        return;
 
       if (message?.offer) {
         try {
-          var rtcSessionInit = message.offer as RTCSessionDescriptionInit;
           await this.rtcConnection?.setRemoteDescription(message.offer as RTCSessionDescriptionInit);
         } catch (error) {
           console.log(error);
@@ -80,7 +83,7 @@ export class VideochatComponent implements OnInit {
 
         this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "sdp": this.rtcConnection?.localDescription }));
       }
-      else if (message.sdp.type == 'answer') {
+      else if (message?.sdp?.type == 'answer') {
         try {
           this.rtcConnection?.setRemoteDescription(message.sdp as RTCSessionDescriptionInit)
         } catch (error) {
@@ -92,6 +95,30 @@ export class VideochatComponent implements OnInit {
           this.rtcConnection?.addIceCandidate(message.sdp as RTCIceCandidateInit);
         } catch (error) {
           console.log(error);
+        }
+      }
+      else if (message?.action) {
+        console.log(message);
+        if (message.action == "close") {
+
+          for (const track of this.localStream.getTracks()) {
+            track.stop();
+          }
+
+          this.rtcConnection?.close();
+
+          await this.signalindOnReceive();
+          this.createPeerConnection().then(async () => {
+            this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+            for (const track of this.localStream.getTracks()) {
+              this.rtcConnection?.addTrack(track, this.localStream);
+            }
+
+            this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            var user1 = document.getElementById('user1');
+            (user1 as HTMLVideoElement).srcObject = this.localStream;
+          });
         }
       }
     });
@@ -106,9 +133,68 @@ export class VideochatComponent implements OnInit {
         this.rtcConnection?.addTrack(track, this.localStream);
       }
 
+      this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       var user1 = document.getElementById('user1');
       (user1 as HTMLVideoElement).srcObject = this.localStream;
     });
+  }
+
+  async muteAudio() {
+    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    for (const algo of this.localStream.getTracks()) {
+      this.rtcConnection?.addTrack(algo, this.localStream);
+    }
+  }
+
+  async unMuteAudio() {
+    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    for (const algo of this.localStream.getTracks()) {
+      this.rtcConnection?.addTrack(algo, this.localStream);
+    }
+  }
+
+  disconnect() {
+    console.log('estou sendo chamado');
+    try {
+      // Parar todas as faixas e liberar a câmera e o microfone
+      for (const track of this.localStream.getTracks()) {
+        track.stop();
+      }
+
+      this.rtcConnection?.close();
+      this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
+      this.router.navigate(['/home']);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async nextPeer() {
+    console.log('estou sendo chamado');
+    try {
+      // Parar todas as faixas e liberar a câmera e o microfone
+      for (const track of this.localStream.getTracks()) {
+        track.stop();
+      }
+
+      this.rtcConnection?.close();
+      this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
+
+      await this.signalindOnReceive();
+      this.createPeerConnection().then(async () => {
+        this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+        for (const track of this.localStream.getTracks()) {
+          this.rtcConnection?.addTrack(track, this.localStream);
+        }
+
+        this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        var user1 = document.getElementById('user1');
+        (user1 as HTMLVideoElement).srcObject = this.localStream;
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /**

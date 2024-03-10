@@ -1,14 +1,19 @@
 import { CanActivateFn } from '@angular/router';
 import { PopupService } from '../service/popup/popup.service';
-import { Injectable, inject } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { MessageService } from '../service/message/message.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 class authPermission {
-  
-  constructor(public popupService: PopupService) { }
 
-  canActivate(token: string | null): boolean {
+  constructor(public popupService: PopupService, @Inject(PLATFORM_ID) private platformId: Object) { }
+
+  canActivate(): boolean {
+    var token = null;
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("token");
+    }
     if (token)
       return true;
 
@@ -18,6 +23,6 @@ class authPermission {
 }
 
 export const authPermissionGuard: CanActivateFn = (route, state) => {
-  var token = localStorage.getItem("token");
-  return inject(authPermission).canActivate(token);
+
+  return inject(authPermission).canActivate();
 }

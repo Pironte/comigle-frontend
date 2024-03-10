@@ -9,13 +9,12 @@ import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { ForgetPasswordResponse } from '../../components/interfaces/forgetPassword.interface';
 import { ResetPasswordRequest } from '../../models/reset-password.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationServiceService {
-
-  private urlEndpoint = 'https://localhost:7260';
 
   constructor(private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) { }
 
@@ -25,7 +24,7 @@ export class AuthenticationServiceService {
    * @returns resposta da criação do usuário
    */
   register(request: CreateUserRequest): Observable<CreateUserResponse> {
-    const registerEndpoint = `${this.urlEndpoint}/User/Register`;
+    const registerEndpoint = `${environment.apiUrl}/User/Register`;
     return this.http.post<CreateUserResponse>(registerEndpoint, request);
   }
 
@@ -35,7 +34,7 @@ export class AuthenticationServiceService {
    * @returns resposta com token do usuário
    */
   login(request: LoginRequest): Observable<LoginResponse> {
-    const loginEndpoint = `${this.urlEndpoint}/User/Login`;
+    const loginEndpoint = `${environment.apiUrl}/User/Login`;
     return this.http.post<LoginResponse>(loginEndpoint, request);
   }
 
@@ -45,13 +44,13 @@ export class AuthenticationServiceService {
    * @returns 
    */
   forgetPassword(userName: string): Observable<ForgetPasswordResponse> {
-    const forgetPasswordEndpoint = `${this.urlEndpoint}/User/SendEmailToResetPassword`;
+    const forgetPasswordEndpoint = `${environment.apiUrl}/User/SendEmailToResetPassword`;
     const data = { UserName: userName, CallbackUrl: 'http://localhost:4200/resetpassword' };
     return this.http.post<ForgetPasswordResponse>(forgetPasswordEndpoint, data);
   }
 
   resetPassword(request: ResetPasswordRequest): Observable<ForgetPasswordResponse> {
-    const resetPasswordEndpoint = `${this.urlEndpoint}/User/ResetPassword`;
+    const resetPasswordEndpoint = `${environment.apiUrl}/User/ResetPassword`;
     return this.http.post<ForgetPasswordResponse>(resetPasswordEndpoint, request);
   }
 
@@ -59,7 +58,7 @@ export class AuthenticationServiceService {
    * Desloga o usuário do sistema
    */
   logout(): void {
-    const logoutEndpoint = `${this.urlEndpoint}/User/LogOut`;
+    const logoutEndpoint = `${environment.apiUrl}/User/LogOut`;
     console.log(`peguei a url ${logoutEndpoint}`);
     // Obter o token do sessionStorage
     const token = localStorage.getItem('token');
