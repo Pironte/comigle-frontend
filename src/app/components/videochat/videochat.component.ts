@@ -25,7 +25,15 @@ export class VideochatComponent implements OnInit {
   }
 
   async createPeerConnection() {
-    this.rtcConnection = new RTCPeerConnection();
+    const configuration = {
+      iceServers: [
+        {
+          urls: "stun:stun.l.google.com:19302"
+        }
+      ]
+    };
+
+    this.rtcConnection = new RTCPeerConnection(configuration);
 
     this.rtcConnection.onicecandidate = (event) => {
       if (event.candidate) {
