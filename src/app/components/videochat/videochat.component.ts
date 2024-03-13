@@ -54,8 +54,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
         remoteStream = event.streams[0];
       }
 
-      console.log('estou passando aqui');
-
       // Adiciona o track recebido ao MediaStream
       remoteStream.addTrack(event.track);
 
