@@ -42,10 +42,15 @@ export class VideochatComponent implements OnInit {
     }
 
     this.rtcConnection.ontrack = (event) => {
-      console.log("Track de mídia recebido.");
-
       // Cria um novo MediaStream ou usa um existente
-      let remoteStream = event.streams[0];
+
+      let remoteStream!: MediaStream;
+
+      if (event.streams[0]) {
+        remoteStream = event.streams[0];
+      }
+
+      console.log('estou passando aqui');
 
       // Adiciona o track recebido ao MediaStream
       remoteStream.addTrack(event.track);
@@ -53,8 +58,6 @@ export class VideochatComponent implements OnInit {
       // Agora você pode usar esse MediaStream para exibir o vídeo
       var remoteVideo = document.getElementById('remote') as HTMLVideoElement;
       remoteVideo.srcObject = remoteStream;
-
-      console.log("Fluxo de mídia adicionado ao elemento de vídeo.");
     }
 
     this.rtcConnection.onnegotiationneeded = async () => {
@@ -71,20 +74,15 @@ export class VideochatComponent implements OnInit {
     };
   }
 
-  async signalindOnReceive() {
+  async signalingOnReceive() {
     this.signalrService.hubConnection.on("Receive", async (data) => {
       var message = JSON.parse(data);
-      console.log(message);
 
-      if (this.rtcConnection?.connectionState == 'connected')
+      if (this.rtcConnection?.connectionState == 'connected' || this.rtcConnection?.connectionState == 'closed' || this.rtcConnection?.connectionState == 'disconnected')
         return;
 
       if (message?.offer) {
-        try {
-          await this.rtcConnection?.setRemoteDescription(message.offer as RTCSessionDescriptionInit);
-        } catch (error) {
-          console.log(error);
-        }
+        await this.rtcConnection?.setRemoteDescription(message.offer as RTCSessionDescriptionInit);
 
         var answer = await this.rtcConnection?.createAnswer();
         await this.rtcConnection?.setLocalDescription(answer as RTCSessionDescriptionInit);
@@ -92,48 +90,29 @@ export class VideochatComponent implements OnInit {
         this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "sdp": this.rtcConnection?.localDescription }));
       }
       else if (message?.sdp?.type == 'answer') {
-        try {
-          this.rtcConnection?.setRemoteDescription(message.sdp as RTCSessionDescriptionInit)
-        } catch (error) {
-          console.log(error);
-        }
+        this.rtcConnection?.setRemoteDescription(message.sdp as RTCSessionDescriptionInit)
       }
       else if (message?.sdp?.candidate) {
-        try {
-          this.rtcConnection?.addIceCandidate(message.sdp as RTCIceCandidateInit);
-        } catch (error) {
-          console.log(error);
-        }
+        this.rtcConnection?.addIceCandidate(message.sdp as RTCIceCandidateInit);
       }
       else if (message?.action) {
-        console.log(message);
-        if (message.action == "close") {
-
-          for (const track of this.localStream.getTracks()) {
-            track.stop();
+        if (message.action == "mute") {
+          var remoteVideo = document.getElementById('remote') as HTMLVideoElement;
+          if (remoteVideo) {
+            remoteVideo.muted = true;
           }
-
-          this.rtcConnection?.close();
-
-          await this.signalindOnReceive();
-          this.createPeerConnection().then(async () => {
-            this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-
-            for (const track of this.localStream.getTracks()) {
-              this.rtcConnection?.addTrack(track, this.localStream);
-            }
-
-            this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-            var user1 = document.getElementById('user1');
-            (user1 as HTMLVideoElement).srcObject = this.localStream;
-          });
+        }
+        else if (message.action == "unMute") {
+          var remoteVideo = document.getElementById('remote') as HTMLVideoElement;
+          if (remoteVideo)
+            remoteVideo.muted = true;
         }
       }
     });
   }
 
   async ngOnInit(): Promise<void> {
-    await this.signalindOnReceive();
+    await this.signalingOnReceive();
     this.createPeerConnection().then(async () => {
       this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
@@ -147,48 +126,36 @@ export class VideochatComponent implements OnInit {
     });
   }
 
-  async muteAudio() {
-    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-    for (const algo of this.localStream.getTracks()) {
-      this.rtcConnection?.addTrack(algo, this.localStream);
-    }
+  muteAudio() {
+    this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "mute" }));
   }
 
-  async unMuteAudio() {
-    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    for (const algo of this.localStream.getTracks()) {
-      this.rtcConnection?.addTrack(algo, this.localStream);
-    }
+  unMuteAudio() {
+    this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "unMute" }));
   }
 
   disconnect() {
-    console.log('estou sendo chamado');
-    try {
-      // Parar todas as faixas e liberar a câmera e o microfone
-      for (const track of this.localStream.getTracks()) {
-        track.stop();
-      }
-
-      this.rtcConnection?.close();
-      this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
-      this.router.navigate(['/home']);
-    } catch (error) {
-      console.log(error);
+    // Parar todas as faixas e liberar a câmera e o microfone
+    for (const track of this.localStream.getTracks()) {
+      track.stop();
     }
+
+    this.rtcConnection?.close();
+    this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
+    this.router.navigate(['/home']);
   }
 
   async nextPeer() {
-    console.log('estou sendo chamado');
     try {
       // Parar todas as faixas e liberar a câmera e o microfone
-      for (const track of this.localStream.getTracks()) {
-        track.stop();
-      }
+      // for (const track of this.localStream.getTracks()) {
+      //   track.stop();
+      // }
 
       this.rtcConnection?.close();
-      this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
+      this.rtcConnection = undefined;
+      // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
 
-      await this.signalindOnReceive();
       this.createPeerConnection().then(async () => {
         this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
