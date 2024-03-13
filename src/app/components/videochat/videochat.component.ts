@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthenticationServiceService } from '../../service/authentication/authentication-service.service';
 import { Router, RouterModule } from '@angular/router';
@@ -12,7 +12,7 @@ import { SignalrService } from '../../service/chathub/signalr.service';
   templateUrl: './videochat.component.html',
   styleUrl: './videochat.component.scss'
 })
-export class VideochatComponent implements OnInit {
+export class VideochatComponent implements OnInit, OnDestroy {
   messages: string[] = [];
   newMessage: string = '';
   userName: string | null = '';
@@ -22,6 +22,10 @@ export class VideochatComponent implements OnInit {
 
   constructor(public authService: AuthenticationServiceService, private signalrService: SignalrService, private router: Router) {
     this.userName = this.authService.getUserName();
+  }
+
+  ngOnDestroy(): void {
+    this.rtcConnection?.close();
   }
 
   async createPeerConnection() {
@@ -141,7 +145,7 @@ export class VideochatComponent implements OnInit {
     }
 
     this.rtcConnection?.close();
-    this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
+    // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
     this.router.navigate(['/home']);
   }
 
