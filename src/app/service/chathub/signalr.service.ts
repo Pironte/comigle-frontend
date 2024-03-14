@@ -21,11 +21,6 @@ export class SignalrService {
       .catch(err => console.log('Erro ao iniciar a conexão' + err))
   }
 
-  public addTransferListener = (methodName: string, action: (...args: any[]) => void) => {
-    console.log(`estou ouvindo o método: ${methodName}`);
-    this.hubConnection.on(methodName, (action));
-  }
-
   public invokeSignalrMethod(methodName: string, message: string) {
     this.hubConnection.invoke(methodName, message);
   }

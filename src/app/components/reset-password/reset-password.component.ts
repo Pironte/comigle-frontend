@@ -31,8 +31,6 @@ export class ResetPasswordComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.userId = params['userId'];
       this.token = params['token'];
-
-      console.log(`peguei o userid ${this.userId} e token: ${this.token}`);
     });
   }
 

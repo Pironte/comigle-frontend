@@ -59,10 +59,8 @@ export class AuthenticationServiceService {
    */
   logout(): void {
     const logoutEndpoint = `${environment.apiUrl}/User/LogOut`;
-    console.log(`peguei a url ${logoutEndpoint}`);
     // Obter o token do sessionStorage
     const token = localStorage.getItem('token');
-    console.log(`peguei o token ${token}`);
 
     // Se o token existir, enviar no cabeçalho da solicitação
     if (token) {

@@ -80,9 +80,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
     this.signalrService.hubConnection.on("Receive", async (data) => {
       var message = JSON.parse(data);
 
-      if (this.rtcConnection?.connectionState == 'connected' || this.rtcConnection?.connectionState == 'closed' || this.rtcConnection?.connectionState == 'disconnected')
-        return;
-
       if (message?.offer) {
         await this.rtcConnection?.setRemoteDescription(message.offer as RTCSessionDescriptionInit);
 
@@ -96,19 +93,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
       }
       else if (message?.sdp?.candidate) {
         this.rtcConnection?.addIceCandidate(message.sdp as RTCIceCandidateInit);
-      }
-      else if (message?.action) {
-        if (message.action == "mute") {
-          var remoteVideo = document.getElementById('remote') as HTMLVideoElement;
-          if (remoteVideo) {
-            remoteVideo.muted = true;
-          }
-        }
-        else if (message.action == "unMute") {
-          var remoteVideo = document.getElementById('remote') as HTMLVideoElement;
-          if (remoteVideo)
-            remoteVideo.muted = true;
-        }
       }
     });
   }
@@ -128,12 +112,20 @@ export class VideochatComponent implements OnInit, OnDestroy {
     });
   }
 
-  muteAudio() {
-    this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "mute" }));
+  async muteAudio() {
+    var localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+
+    for (var track of localStream.getTracks()) {
+      this.rtcConnection?.addTrack(track, localStream);
+    }
   }
 
-  unMuteAudio() {
-    this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "unMute" }));
+  async unMuteAudio() {
+    var localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+    for (var track of localStream.getTracks()) {
+      this.rtcConnection?.addTrack(track, localStream);
+    }
   }
 
   disconnect() {
@@ -148,30 +140,26 @@ export class VideochatComponent implements OnInit, OnDestroy {
   }
 
   async nextPeer() {
-    try {
-      // Parar todas as faixas e liberar a câmera e o microfone
-      // for (const track of this.localStream.getTracks()) {
-      //   track.stop();
-      // }
+    // Parar todas as faixas e liberar a câmera e o microfone
+    // for (const track of this.localStream.getTracks()) {
+    //   track.stop();
+    // }
 
-      this.rtcConnection?.close();
-      this.rtcConnection = undefined;
-      // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
+    this.rtcConnection?.close();
+    this.rtcConnection = undefined;
+    // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
 
-      this.createPeerConnection().then(async () => {
-        this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    this.createPeerConnection().then(async () => {
+      this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
-        for (const track of this.localStream.getTracks()) {
-          this.rtcConnection?.addTrack(track, this.localStream);
-        }
+      for (const track of this.localStream.getTracks()) {
+        this.rtcConnection?.addTrack(track, this.localStream);
+      }
 
-        this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        var user1 = document.getElementById('user1');
-        (user1 as HTMLVideoElement).srcObject = this.localStream;
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      var user1 = document.getElementById('user1');
+      (user1 as HTMLVideoElement).srcObject = this.localStream;
+    });
   }
 
   /**
