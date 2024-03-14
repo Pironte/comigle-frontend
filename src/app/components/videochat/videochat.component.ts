@@ -18,6 +18,8 @@ export class VideochatComponent implements OnInit, OnDestroy {
   userName: string | null = '';
   isOpen: boolean = false;
   rtcConnection!: RTCPeerConnection | undefined;
+  dataChannel!: RTCDataChannel | undefined;
+  receiveChannel!: RTCDataChannel | undefined;
   localStream!: MediaStream;
 
   constructor(public authService: AuthenticationServiceService, private signalrService: SignalrService, private router: Router) {
@@ -28,6 +30,9 @@ export class VideochatComponent implements OnInit, OnDestroy {
     this.rtcConnection?.close();
   }
 
+  /**
+   * Cria conexão entre os peers
+   */
   async createPeerConnection() {
     const configuration = {
       iceServers: [
@@ -38,6 +43,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
     };
 
     this.rtcConnection = new RTCPeerConnection(configuration);
+    this.dataChannel = this.rtcConnection.createDataChannel("chat");
 
     this.rtcConnection.onicecandidate = (event) => {
       if (event.candidate) {
@@ -74,6 +80,16 @@ export class VideochatComponent implements OnInit, OnDestroy {
         console.error('Erro ao criar oferta: ', error);
       }
     };
+
+    this.rtcConnection.ondatachannel = (event) => {
+      console.log('entrei para fazer a comunicação entrei os canais');
+      this.receiveChannel = event.channel;
+      this.receiveChannel.onmessage = (event) => {
+        console.log(`estou recebendo a mensagem ${event.data}`);
+        this.messages.push(event.data);
+        this.newMessage = '';
+      }
+    }
   }
 
   async signalingOnReceive() {
@@ -167,6 +183,9 @@ export class VideochatComponent implements OnInit, OnDestroy {
    */
   sendMessage(): void {
     if (this.newMessage.trim() !== '') {
+      var messageToSend = `${this.userName}: ${this.newMessage}`;
+      this.dataChannel?.send(messageToSend);
+
       this.messages.push(`${this.userName}: ${this.newMessage}`);
       this.newMessage = '';
     }

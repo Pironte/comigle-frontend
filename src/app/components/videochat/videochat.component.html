@@ -36,6 +36,7 @@
             <input type="text" [(ngModel)]="newMessage" id="chatInput" class="chat-input"
                 placeholder="Digite sua mensagem..." />
             <!-- <button id="sendButton" class="send-button" (click)="sendMessage()">Enviar</button> -->
+            <button (click)="sendMessage()" >Enviar</button>
             <button (click)="disconnect()" >PARAR</button>
             <button (click)="muteAudio()" class="=stop-button">Mutar audio</button>
             <button (click)="unMuteAudio()" class="=stop-button">Desmutar audio</button>
