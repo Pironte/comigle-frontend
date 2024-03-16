@@ -96,8 +96,10 @@ export class VideochatComponent implements OnInit, OnDestroy {
     this.signalrService.hubConnection.on("Receive", async (data) => {
       var message = JSON.parse(data);
 
-      if (this.rtcConnection?.connectionState == 'connected' || this.rtcConnection?.connectionState == 'closed' || this.rtcConnection?.connectionState == 'disconnected')
+      if (this.rtcConnection?.signalingState == 'stable') {
+        console.log('tentei fazer uma conexão, mas estava estável');
         return;
+      }
 
       if (message?.offer) {
         await this.rtcConnection?.setRemoteDescription(message.offer as RTCSessionDescriptionInit);
@@ -165,7 +167,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
     // }
 
     this.rtcConnection?.close();
-    this.rtcConnection = undefined;
     // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
 
     this.createPeerConnection().then(async () => {
