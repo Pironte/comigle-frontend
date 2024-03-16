@@ -96,11 +96,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
     this.signalrService.hubConnection.on("Receive", async (data) => {
       var message = JSON.parse(data);
 
-      if (this.rtcConnection?.signalingState == 'stable' || this.rtcConnection?.signalingState == 'closed') {
-        console.log('tentei fazer uma conexão, mas estava estável ou fechada');
-        return;
-      }
-
       if (message?.offer) {
         await this.rtcConnection?.setRemoteDescription(message.offer as RTCSessionDescriptionInit);
 
