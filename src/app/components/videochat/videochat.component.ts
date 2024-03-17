@@ -120,7 +120,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
       let rtcConnection = this.mapPeerConnection.get(this.connectionId);
       let rtcSendingConnection = this.mapPeerConnection.get(connectionId);
-      console.log(`estado de quem esta mandando: ${rtcSendingConnection?.signalingState}} VS estado de quem esta recebendo: ${rtcConnection?.signalingState}`)
+      console.log(`estado de quem esta mandando: ${rtcSendingConnection?.connectionState}} VS estado de quem esta recebendo: ${rtcConnection?.connectionState}`)
       if (rtcConnection?.connectionState == 'connected')
         return;
 
