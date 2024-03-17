@@ -26,4 +26,20 @@ export class SignalrService {
   public invokeSignalrMethod(methodName: string, connectionId: string | null, message: string) {
     this.hubConnection.invoke(methodName, connectionId, message);
   }
+
+  public invokeSignalrMethodGet(methodName: string, connectionId: string | null): Promise<string> {
+    return this.hubConnection.invoke<string>(methodName, connectionId);
+  }
+
+  public savePeersDictionary(connectionId: string | null, state: string) {
+    this.hubConnection.invoke<string>("SavePeersDictionary", connectionId, state);
+  }
+
+  public savePeersConnect(localConnectionId: string | null, remoteConnectionId: string) {
+    this.hubConnection.invoke<string>("SavePeersConnect", localConnectionId, remoteConnectionId);
+  }
+
+  public invokeSignalrMethodDelete(methodName: string, connectionId: string | null) {
+    this.hubConnection.invoke(methodName, connectionId);
+  }
 }

@@ -18,7 +18,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
   newMessage: string = '';
   userName: string | null = '';
   isOpen: boolean = false;
-  // dataChannel!: RTCDataChannel | undefined;
   receiveChannel!: RTCDataChannel | undefined;
   connectionId!: string | null;
   localStream!: MediaStream;
@@ -33,6 +32,8 @@ export class VideochatComponent implements OnInit, OnDestroy {
     let rtcConnection = this.mapPeerConnection.get(this.signalrService.clientId);
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
+    this.signalrService.invokeSignalrMethodDelete("DeletePeersDictionary", this.connectionId);
+    this.signalrService.invokeSignalrMethodDelete("DeletePeersConnect", this.connectionId);
   }
 
   /**
@@ -52,6 +53,8 @@ export class VideochatComponent implements OnInit, OnDestroy {
     this.mapPeerConnection.set(this.signalrService.hubConnection.connectionId, new RTCPeerConnection(configuration));
     let rtcConnection = this.mapPeerConnection.get(this.signalrService.hubConnection.connectionId);
     this.connectionId = this.signalrService.hubConnection.connectionId;
+
+    this.signalrService.savePeersDictionary(this.connectionId, "");
 
     if (rtcConnection) {
       rtcConnection.onicecandidate = (event) => {
@@ -116,16 +119,21 @@ export class VideochatComponent implements OnInit, OnDestroy {
   async signalingOnReceive() {
     this.signalrService.hubConnection.on("Receive", async (connectionId, data) => {
       var message = JSON.parse(data);
-      console.log(`ConnectionId de quem esta mandando mensagem: ${connectionId} VS quem esta recebendo: ${this.connectionId}`);
 
       let rtcConnection = this.mapPeerConnection.get(this.connectionId);
-      let rtcSendingConnection = this.mapPeerConnection.get(connectionId);
-      console.log(`estado de quem esta mandando: ${rtcSendingConnection?.connectionState}} VS estado de quem esta recebendo: ${rtcConnection?.connectionState}`)
-      if (rtcConnection?.connectionState == 'connected')
-        return;
+      let remoteConnectionId = await this.signalrService.invokeSignalrMethodGet("GetPeersConnect", this.connectionId);
+      if (rtcConnection?.connectionState == 'connected') {
+        if (remoteConnectionId) {
+          if (remoteConnectionId != connectionId)
+            return;
+        }
+      }
 
       if (rtcConnection) {
         if (message?.offer) {
+          this.signalrService.savePeersDictionary(this.connectionId, "connected");
+          this.signalrService.savePeersConnect(this.connectionId, connectionId);
+
           await rtcConnection.setRemoteDescription(message.offer as RTCSessionDescriptionInit);
 
           var answer = await rtcConnection?.createAnswer();
@@ -202,6 +210,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
+    this.signalrService.invokeSignalrMethodDelete("DeletePeersConnect", this.connectionId);
     // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
 
     this.createPeerConnection().then(async () => {
