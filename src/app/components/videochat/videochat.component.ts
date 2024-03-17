@@ -116,11 +116,11 @@ export class VideochatComponent implements OnInit, OnDestroy {
   async signalingOnReceive() {
     this.signalrService.hubConnection.on("Receive", async (connectionId, data) => {
       var message = JSON.parse(data);
-      // console.log(`ConnectionId de quem esta mandando mensagem: ${connectionId} VS quem esta recebendo: ${this.connectionId}`);
+      console.log(`ConnectionId de quem esta mandando mensagem: ${connectionId} VS quem esta recebendo: ${this.connectionId}`);
 
       let rtcConnection = this.mapPeerConnection.get(this.connectionId);
       let rtcSendingConnection = this.mapPeerConnection.get(connectionId);
-      // console.log(`estado de quem esta mandando: ${rtcSendingConnection?.signalingState}} VS estado de quem esta recebendo: ${rtcConnection?.signalingState}`)
+      console.log(`estado de quem esta mandando: ${rtcSendingConnection?.signalingState}} VS estado de quem esta recebendo: ${rtcConnection?.signalingState}`)
       if (rtcConnection?.signalingState == 'stable')
         return;
 
