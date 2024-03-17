@@ -28,12 +28,10 @@ export class VideochatComponent implements OnInit, OnDestroy {
     this.userName = this.authService.getUserName();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     let rtcConnection = this.mapPeerConnection.get(this.signalrService.clientId);
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
-    this.signalrService.invokeSignalrMethodDelete("DeletePeersDictionary", this.connectionId);
-    this.signalrService.invokeSignalrMethodDelete("DeletePeersConnect", this.connectionId);
   }
 
   /**
@@ -53,8 +51,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
     this.mapPeerConnection.set(this.signalrService.hubConnection.connectionId, new RTCPeerConnection(configuration));
     let rtcConnection = this.mapPeerConnection.get(this.signalrService.hubConnection.connectionId);
     this.connectionId = this.signalrService.hubConnection.connectionId;
-
-    this.signalrService.savePeersDictionary(this.connectionId, "");
 
     if (rtcConnection) {
       rtcConnection.onicecandidate = (event) => {
@@ -87,7 +83,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
           await rtcConnection?.setLocalDescription(offer);
 
           // Enviar a oferta para o outro peer através do canal de sinalização
-          this.signalrService.invokeSignalrMethod("Send", this.connectionId, JSON.stringify({ "offer": rtcConnection?.localDescription }));
+          await this.signalrService.invokeSignalrMethod("Send", this.connectionId, JSON.stringify({ "offer": rtcConnection?.localDescription }));
         } catch (error) {
           console.error('Erro ao criar oferta: ', error);
         }
@@ -121,31 +117,24 @@ export class VideochatComponent implements OnInit, OnDestroy {
       var message = JSON.parse(data);
 
       let rtcConnection = this.mapPeerConnection.get(this.connectionId);
-      let remoteConnectionId = await this.signalrService.invokeSignalrMethodGet("GetPeersConnect", this.connectionId);
       if (rtcConnection?.connectionState == 'connected') {
-        if (remoteConnectionId) {
-          if (remoteConnectionId != connectionId)
-            return;
-        }
+        return;
       }
 
       if (rtcConnection) {
         if (message?.offer) {
-          this.signalrService.savePeersDictionary(this.connectionId, "connected");
-          this.signalrService.savePeersConnect(this.connectionId, connectionId);
-
           await rtcConnection.setRemoteDescription(message.offer as RTCSessionDescriptionInit);
 
           var answer = await rtcConnection?.createAnswer();
           await rtcConnection.setLocalDescription(answer as RTCSessionDescriptionInit);
 
-          this.signalrService.invokeSignalrMethod("Send", this.connectionId, JSON.stringify({ "sdp": rtcConnection.localDescription }));
+          await this.signalrService.invokeSignalrMethod("Send", this.connectionId, JSON.stringify({ "sdp": rtcConnection.localDescription }));
         }
         else if (message?.sdp?.type == 'answer') {
-          rtcConnection.setRemoteDescription(message.sdp as RTCSessionDescriptionInit)
+          await rtcConnection.setRemoteDescription(message.sdp as RTCSessionDescriptionInit)
         }
         else if (message?.sdp?.candidate) {
-          rtcConnection.addIceCandidate(message.sdp as RTCIceCandidateInit);
+          await rtcConnection.addIceCandidate(message.sdp as RTCIceCandidateInit);
         }
       }
     });
@@ -189,10 +178,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
   disconnect() {
     let rtcConnection = this.mapPeerConnection.get(this.connectionId);
-    // Parar todas as faixas e liberar a câmera e o microfone
-    for (const track of this.localStream.getTracks()) {
-      track.stop();
-    }
 
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
@@ -201,16 +186,10 @@ export class VideochatComponent implements OnInit, OnDestroy {
   }
 
   async nextPeer() {
-    // Parar todas as faixas e liberar a câmera e o microfone
-    // for (const track of this.localStream.getTracks()) {
-    //   track.stop();
-    // }
-
     let rtcConnection = this.mapPeerConnection.get(this.connectionId);
 
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
-    this.signalrService.invokeSignalrMethodDelete("DeletePeersConnect", this.connectionId);
     // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
 
     this.createPeerConnection().then(async () => {
