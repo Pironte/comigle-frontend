@@ -46,8 +46,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
       ]
     };
 
-    console.log(`chave do hub: ${this.signalrService.clientId}`);
-
     this.mapPeerConnection.set(this.signalrService.hubConnection.connectionId, new RTCPeerConnection(configuration));
     let rtcConnection = this.mapPeerConnection.get(this.signalrService.hubConnection.connectionId);
     this.connectionId = this.signalrService.hubConnection.connectionId;
@@ -91,24 +89,12 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
       rtcConnection.onconnectionstatechange = (event) => {
         let rtcConnection = this.mapPeerConnection.get(this.connectionId);
-        console.log(`estou no estado: ${rtcConnection?.connectionState}`);
-
         if (rtcConnection?.connectionState == "failed") {
           /* possibly reconfigure the connection in some way here */
           /* then request ICE restart */
           rtcConnection.restartIce();
         }
       }
-
-      // this.rtcConnection.ondatachannel = (event) => {
-      //   console.log('entrei para fazer a comunicação entrei os canais');
-      //   this.receiveChannel = event.channel;
-      //   this.receiveChannel.onmessage = (event) => {
-      //     console.log(`estou recebendo a mensagem ${event.data}`);
-      //     this.messages.push(event.data);
-      //     this.newMessage = '';
-      //   }
-      // }
     }
   }
 
