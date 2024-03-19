@@ -23,7 +23,27 @@ export class SignalrService {
     console.log('Iniciou a conexão com o hub')
   }
 
-  public async invokeSignalrMethod(methodName: string, connectionId: string | null, message: string) {
-    await this.hubConnection.invoke(methodName, connectionId, message);
+  public async invokeSignalrMethod(methodName: string, connectionId: string | null, remoteConnectionId: string | null, message: string) {
+    await this.hubConnection.invoke(methodName, connectionId, remoteConnectionId, message);
+  }
+
+  public async AddUserAvaiable(connectionId: string | null) {
+    await this.hubConnection.invoke("AddUser", connectionId);
+  }
+
+  public async GetUserAvaiable(connectionId: string | null): Promise<string> {
+    return this.hubConnection.invoke<string>("TryFindAvailableUser", connectionId);
+  }
+
+  public async MarkUserAsAvaiable(connectionId: string | null) {
+    await this.hubConnection.invoke("MarkUserAsAvailable", connectionId);
+  }
+
+  public async MarkUserAsBusy(connectionId: string | null) {
+    await this.hubConnection.invoke("MarkUserAsBusy", connectionId);
+  }
+
+  public async RemoveUser(connectionId: string) {
+    await this.hubConnection.invoke("RemoveUser", connectionId);
   }
 }

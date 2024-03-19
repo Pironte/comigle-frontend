@@ -21,6 +21,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
   receiveChannel!: RTCDataChannel | undefined;
   connectionId!: string | null;
   localStream!: MediaStream;
+  remoteConnectionId!: string | null;
 
   mapPeerConnection = new Map<string | null, RTCPeerConnection>();
 
@@ -28,16 +29,17 @@ export class VideochatComponent implements OnInit, OnDestroy {
     this.userName = this.authService.getUserName();
   }
 
-  ngOnDestroy() {
+  async ngOnDestroy(): Promise<void> {
     let rtcConnection = this.mapPeerConnection.get(this.signalrService.clientId);
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
+    await this.signalrService.RemoveUser(this.connectionId ?? "");
   }
 
   /**
    * Cria conexão entre os peers
    */
-  async createPeerConnection() {
+  async createPeerConnection(isNextPeer: boolean) {
     const configuration = {
       iceServers: [
         {
@@ -50,10 +52,13 @@ export class VideochatComponent implements OnInit, OnDestroy {
     let rtcConnection = this.mapPeerConnection.get(this.signalrService.hubConnection.connectionId);
     this.connectionId = this.signalrService.hubConnection.connectionId;
 
+    if (!isNextPeer)
+      await this.signalrService.AddUserAvaiable(this.connectionId);
+
     if (rtcConnection) {
-      rtcConnection.onicecandidate = (event) => {
+      rtcConnection.onicecandidate = async (event) => {
         if (event.candidate) {
-          this.signalrService.invokeSignalrMethod("Send", this.connectionId, JSON.stringify({ "sdp": event.candidate }));
+          await this.signalrService.invokeSignalrMethod("Send", this.connectionId, this.remoteConnectionId, JSON.stringify({ "sdp": event.candidate }));
         }
       }
 
@@ -76,22 +81,33 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
       rtcConnection.onnegotiationneeded = async () => {
         try {
+          if (!this.remoteConnectionId) {
+            this.remoteConnectionId = await this.signalrService.GetUserAvaiable(this.connectionId);
+          }
+
+          if (!this.remoteConnectionId)
+            return;
+
+          await this.signalrService.MarkUserAsBusy(this.connectionId);
+
           // Criar uma oferta e definí-la como a descrição local
           const offer = await rtcConnection?.createOffer();
           await rtcConnection?.setLocalDescription(offer);
 
           // Enviar a oferta para o outro peer através do canal de sinalização
-          await this.signalrService.invokeSignalrMethod("Send", this.connectionId, JSON.stringify({ "offer": rtcConnection?.localDescription }));
+          await this.signalrService.invokeSignalrMethod("Send", this.connectionId, this.remoteConnectionId, JSON.stringify({ "offer": rtcConnection?.localDescription }));
         } catch (error) {
           console.error('Erro ao criar oferta: ', error);
         }
       };
 
-      rtcConnection.onconnectionstatechange = (event) => {
+      rtcConnection.onconnectionstatechange = async (event) => {
         let rtcConnection = this.mapPeerConnection.get(this.connectionId);
+        if (rtcConnection?.connectionState == 'connected') {
+        }
         if (rtcConnection?.connectionState == "failed") {
-          /* possibly reconfigure the connection in some way here */
-          /* then request ICE restart */
+          await this.signalrService.MarkUserAsAvaiable(this.connectionId);
+
           rtcConnection.restartIce();
         }
       }
@@ -103,9 +119,9 @@ export class VideochatComponent implements OnInit, OnDestroy {
       var message = JSON.parse(data);
 
       let rtcConnection = this.mapPeerConnection.get(this.connectionId);
-      if (rtcConnection?.connectionState == 'connected') {
-        return;
-      }
+      // if (rtcConnection?.connectionState == 'connected') {
+      //   return;
+      // }
 
       if (rtcConnection) {
         if (message?.offer) {
@@ -114,7 +130,10 @@ export class VideochatComponent implements OnInit, OnDestroy {
           var answer = await rtcConnection?.createAnswer();
           await rtcConnection.setLocalDescription(answer as RTCSessionDescriptionInit);
 
-          await this.signalrService.invokeSignalrMethod("Send", this.connectionId, JSON.stringify({ "sdp": rtcConnection.localDescription }));
+          await this.signalrService.MarkUserAsBusy(this.connectionId);
+          this.remoteConnectionId = connectionId;
+
+          await this.signalrService.invokeSignalrMethod("Send", this.connectionId, connectionId, JSON.stringify({ "sdp": rtcConnection.localDescription }));
         }
         else if (message?.sdp?.type == 'answer') {
           await rtcConnection.setRemoteDescription(message.sdp as RTCSessionDescriptionInit)
@@ -129,7 +148,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.signalrService.startConnection(`${environment.apiUrl}/chatHub`).then(async () => {
       await this.signalingOnReceive();
-      this.createPeerConnection().then(async () => {
+      this.createPeerConnection(false).then(async () => {
         let rtcConnection = this.mapPeerConnection.get(this.connectionId);
         this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
@@ -162,8 +181,10 @@ export class VideochatComponent implements OnInit, OnDestroy {
     }
   }
 
-  disconnect() {
+  async disconnect() {
     let rtcConnection = this.mapPeerConnection.get(this.connectionId);
+
+    await this.signalrService.RemoveUser(this.connectionId ?? "");
 
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
@@ -173,12 +194,14 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
   async nextPeer() {
     let rtcConnection = this.mapPeerConnection.get(this.connectionId);
+    this.remoteConnectionId = null;
 
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
+    await this.signalrService.MarkUserAsAvaiable(this.connectionId);
     // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
 
-    this.createPeerConnection().then(async () => {
+    this.createPeerConnection(true).then(async () => {
       let rtcConnection = this.mapPeerConnection.get(this.connectionId);
       this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
