@@ -14,7 +14,7 @@ import { environment } from '../../../environments/environment';
   styleUrl: './videochat.component.scss'
 })
 export class VideochatComponent implements OnInit, OnDestroy {
-  messages: string[] = [];
+  messages: { username: string | null, content: string; isReceived: boolean }[] = [];
   newMessage: string = '';
   userName: string | null = '';
   isOpen: boolean = false;
@@ -22,6 +22,8 @@ export class VideochatComponent implements OnInit, OnDestroy {
   connectionId!: string | null;
   localStream!: MediaStream;
   remoteConnectionId!: string | null;
+  isDisableChat: boolean = true;
+  isNextPeerDisable: boolean = false;
 
   mapPeerConnection = new Map<string | null, RTCPeerConnection>();
 
@@ -81,9 +83,9 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
       rtcConnection.onnegotiationneeded = async () => {
         try {
-          if (!this.remoteConnectionId) {
-            this.remoteConnectionId = await this.signalrService.GetUserAvaiable(this.connectionId);
-          }
+          // if (!this.remoteConnectionId) {
+          this.remoteConnectionId = await this.signalrService.GetUserAvaiable(this.connectionId);
+          // }
 
           if (!this.remoteConnectionId)
             return;
@@ -104,10 +106,13 @@ export class VideochatComponent implements OnInit, OnDestroy {
       rtcConnection.onconnectionstatechange = async (event) => {
         let rtcConnection = this.mapPeerConnection.get(this.connectionId);
         if (rtcConnection?.connectionState == 'connected') {
+          this.isDisableChat = false;
         }
-        if (rtcConnection?.connectionState == "failed") {
+        if (rtcConnection?.connectionState == "failed" || rtcConnection?.connectionState == 'disconnected') {
           await this.signalrService.MarkUserAsAvaiable(this.connectionId);
-
+          this.remoteConnectionId = null;
+          this.messages = [];
+          this.isDisableChat = true;
           rtcConnection.restartIce();
         }
       }
@@ -145,9 +150,16 @@ export class VideochatComponent implements OnInit, OnDestroy {
     });
   }
 
+  async receiveMessage() {
+    this.signalrService.hubConnection.on("ReceiveMessage", async (username, message) => {
+      this.addReceivedMessage(username, message);
+    });
+  }
+
   async ngOnInit(): Promise<void> {
     this.signalrService.startConnection(`${environment.apiUrl}/chatHub`).then(async () => {
       await this.signalingOnReceive();
+      await this.receiveMessage();
       this.createPeerConnection(false).then(async () => {
         let rtcConnection = this.mapPeerConnection.get(this.connectionId);
         this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -199,6 +211,15 @@ export class VideochatComponent implements OnInit, OnDestroy {
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
     await this.signalrService.MarkUserAsAvaiable(this.connectionId);
+
+    this.isDisableChat = true;
+    this.isNextPeerDisable = true;
+
+    setTimeout(() => {
+      this.isNextPeerDisable = false;
+    }, 5000);
+
+    this.messages = [];
     // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
 
     this.createPeerConnection(true).then(async () => {
@@ -218,12 +239,12 @@ export class VideochatComponent implements OnInit, OnDestroy {
   /**
    * Método que se encarrega de enviar um array de mensagens enviadas para o HTML
    */
-  sendMessage(): void {
+  async sendMessage() {
     if (this.newMessage.trim() !== '') {
-      var messageToSend = `${this.userName}: ${this.newMessage}`;
-      // this.dataChannel?.send(messageToSend);
+      var messageToSend = this.newMessage;
+      await this.signalrService.SendMessage(this.userName, this.remoteConnectionId, messageToSend);
 
-      this.messages.push(`${this.userName}: ${this.newMessage}`);
+      this.addSentMessage(this.userName, this.newMessage);
       this.newMessage = '';
     }
   }
@@ -234,5 +255,13 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
   hideOptions() {
     this.isOpen = false;
+  }
+
+  addReceivedMessage(username: string | null, content: string) {
+    this.messages.push({ username: username, content: content, isReceived: true });
+  }
+
+  addSentMessage(username: string | null, content: string) {
+    this.messages.push({ username: username, content: content, isReceived: false });
   }
 }

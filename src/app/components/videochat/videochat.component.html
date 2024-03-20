@@ -29,18 +29,21 @@
     <div class="chat">
         <div id="chatContainer" class="chat-container">
             <div id="chatBox" class="chat-box">
-                <div *ngFor="let message of messages">{{ message }}</div>
+                <div *ngFor="let message of messages">
+                    <div [ngClass]="{'text-right': message.isReceived}">
+                        <span class="username">{{message.username}}:</span> {{ message.content }}
+                    </div>
+                </div>
             </div>
         </div>
         <div class="sendButton-container">
+            <button (click)="disconnect()">PARAR</button>
             <input type="text" [(ngModel)]="newMessage" id="chatInput" class="chat-input"
-                placeholder="Digite sua mensagem..." />
-            <!-- <button id="sendButton" class="send-button" (click)="sendMessage()">Enviar</button> -->
-            <button (click)="sendMessage()" >Enviar</button>
-            <button (click)="disconnect()" >PARAR</button>
-            <button (click)="muteAudio()" class="=stop-button">Mutar audio</button>
-            <button (click)="unMuteAudio()" class="=stop-button">Desmutar audio</button>
-            <button (click)="nextPeer()" class="=stop-button">Próximo</button>
+                placeholder="Digite sua mensagem..." [disabled]="isDisableChat" />
+            <button (click)="sendMessage()">Enviar</button>
+            <!-- <button (click)="muteAudio()" class="=stop-button">Mutar audio</button>
+            <button (click)="unMuteAudio()" class="=stop-button">Desmutar audio</button> -->
+            <button [disabled]="isNextPeerDisable" (click)="nextPeer()" class="=stop-button">Próximo</button>
         </div>
     </div>
 </div>

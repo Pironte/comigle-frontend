@@ -58,12 +58,30 @@
     border: 1px solid #ccc;
     padding: 10px;
     background-color: #bebfd4;
+    overflow-y: scroll;
+}
+
+/* Personalizações para WebKit/Blink (Chrome, Safari, Edge) */
+.chat-container::-webkit-scrollbar {
+    width: 10px; /* Largura da barra de rolagem */
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Cor de fundo da trilha da barra de rolagem */
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background: #888; /* Cor da barra de rolagem */
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Cor da barra de rolagem ao passar o mouse */
 }
 
 .chat-box {
     flex-grow: 1;
     overflow-y: auto;
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
     word-wrap: break-word;
 }
 
@@ -191,4 +209,14 @@
 
 .dropdown-content button:active {
     transform: scale(0.98);
+}
+
+.text-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.username {
+    font-weight: bold;
+    color: #333;
 }

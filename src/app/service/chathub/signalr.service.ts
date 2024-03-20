@@ -19,7 +19,6 @@ export class SignalrService {
     await this.hubConnection.start();
 
     this.clientId = this.hubConnection.connectionId;
-    console.log(`este é o clientID da conexão: ${this.clientId}`)
     console.log('Iniciou a conexão com o hub')
   }
 
@@ -45,5 +44,9 @@ export class SignalrService {
 
   public async RemoveUser(connectionId: string) {
     await this.hubConnection.invoke("RemoveUser", connectionId);
+  }
+
+  public async SendMessage(username: string | null,  connectionId: string | null, message: string) {
+    await this.hubConnection.invoke("SendMessage", username, connectionId, message);
   }
 }
