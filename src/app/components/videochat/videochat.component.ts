@@ -114,8 +114,12 @@ export class VideochatComponent implements OnInit, OnDestroy {
         if (rtcConnection?.connectionState == "failed" || rtcConnection?.connectionState == 'disconnected') {
           await this.signalrService.MarkUserAsAvaiable(this.connectionId);
           this.remoteConnectionId = null;
-          this.messages = [];
-          this.isDisableChat.set(true);
+
+          this.ngZone.run(() => {
+            this.messages = [];
+            this.isDisableChat.set(true);
+          });
+
           rtcConnection.restartIce();
         }
       }
@@ -153,7 +157,9 @@ export class VideochatComponent implements OnInit, OnDestroy {
   async receiveMessage() {
     this.signalrService.hubConnection.on("ReceiveMessage", async (username, message) => {
       console.log(`estou recebendo a mensagem ${message}`);
-      this.addReceivedMessage(username, message);
+      this.ngZone.run(() => {
+        this.addReceivedMessage(username, message);
+      });
     });
   }
 
