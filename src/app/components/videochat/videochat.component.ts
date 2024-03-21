@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthenticationServiceService } from '../../service/authentication/authentication-service.service';
 import { Router, RouterModule } from '@angular/router';
@@ -27,7 +27,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
   mapPeerConnection = new Map<string | null, RTCPeerConnection>();
 
-  constructor(public authService: AuthenticationServiceService, public signalrService: SignalrService, private router: Router) {
+  constructor(public authService: AuthenticationServiceService, public signalrService: SignalrService, private router: Router, private ngZone: NgZone) {
     this.userName = this.authService.getUserName();
   }
 
@@ -106,8 +106,10 @@ export class VideochatComponent implements OnInit, OnDestroy {
       rtcConnection.onconnectionstatechange = async (event) => {
         let rtcConnection = this.mapPeerConnection.get(this.connectionId);
         if (rtcConnection?.connectionState == 'connected') {
-          console.log('entrei para desabilitar o chat');
-          this.isDisableChat.set(false);
+          console.log('entrei para habilitar o chat');
+          this.ngZone.run(() => {
+            this.isDisableChat.set(false);
+          });
         }
         if (rtcConnection?.connectionState == "failed" || rtcConnection?.connectionState == 'disconnected') {
           await this.signalrService.MarkUserAsAvaiable(this.connectionId);
