@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthenticationServiceService } from '../../service/authentication/authentication-service.service';
 import { Router, RouterModule } from '@angular/router';
@@ -22,7 +22,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
   connectionId!: string | null;
   localStream!: MediaStream;
   remoteConnectionId!: string | null;
-  isDisableChat: boolean = true;
+  isDisableChat = signal<boolean>(true);
   isNextPeerDisable: boolean = false;
 
   mapPeerConnection = new Map<string | null, RTCPeerConnection>();
@@ -107,13 +107,13 @@ export class VideochatComponent implements OnInit, OnDestroy {
         let rtcConnection = this.mapPeerConnection.get(this.connectionId);
         if (rtcConnection?.connectionState == 'connected') {
           console.log('entrei para desabilitar o chat');
-          this.isDisableChat = false;
+          this.isDisableChat.set(false);
         }
         if (rtcConnection?.connectionState == "failed" || rtcConnection?.connectionState == 'disconnected') {
           await this.signalrService.MarkUserAsAvaiable(this.connectionId);
           this.remoteConnectionId = null;
           this.messages = [];
-          this.isDisableChat = true;
+          this.isDisableChat.set(true);
           rtcConnection.restartIce();
         }
       }
@@ -223,7 +223,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
     this.mapPeerConnection.delete(this.connectionId);
     await this.signalrService.MarkUserAsAvaiable(this.connectionId);
 
-    this.isDisableChat = true;
+    this.isDisableChat.set(true);
     this.isNextPeerDisable = true;
 
     setTimeout(() => {

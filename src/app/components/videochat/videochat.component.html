@@ -39,7 +39,7 @@
         <div class="sendButton-container">
             <button (click)="disconnect()">PARAR</button>
             <input type="text" [(ngModel)]="newMessage" id="chatInput" class="chat-input"
-                placeholder="Digite sua mensagem..." [disabled]="isDisableChat" />
+                placeholder="Digite sua mensagem..." [disabled]="isDisableChat()" />
             <button (click)="sendMessage()">Enviar</button>
             <!-- <button (click)="muteAudio()" class="=stop-button">Mutar audio</button>
             <button (click)="unMuteAudio()" class="=stop-button">Desmutar audio</button> -->
