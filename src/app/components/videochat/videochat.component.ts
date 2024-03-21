@@ -106,6 +106,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
       rtcConnection.onconnectionstatechange = async (event) => {
         let rtcConnection = this.mapPeerConnection.get(this.connectionId);
         if (rtcConnection?.connectionState == 'connected') {
+          console.log('entrei para desabilitar o chat');
           this.isDisableChat = false;
         }
         if (rtcConnection?.connectionState == "failed" || rtcConnection?.connectionState == 'disconnected') {
@@ -124,9 +125,6 @@ export class VideochatComponent implements OnInit, OnDestroy {
       var message = JSON.parse(data);
 
       let rtcConnection = this.mapPeerConnection.get(this.connectionId);
-      // if (rtcConnection?.connectionState == 'connected') {
-      //   return;
-      // }
 
       if (rtcConnection) {
         if (message?.offer) {
@@ -152,6 +150,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
 
   async receiveMessage() {
     this.signalrService.hubConnection.on("ReceiveMessage", async (username, message) => {
+      console.log(`estou recebendo a mensagem ${message}`);
       this.addReceivedMessage(username, message);
     });
   }
@@ -175,6 +174,9 @@ export class VideochatComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * OBSOLETO
+   */
   async muteAudio() {
     let rtcConnection = this.mapPeerConnection.get(this.connectionId);
     var localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
@@ -184,6 +186,9 @@ export class VideochatComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * OBSOLETO
+   */
   async unMuteAudio() {
     let rtcConnection = this.mapPeerConnection.get(this.connectionId);
     var localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -193,20 +198,26 @@ export class VideochatComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Desconecta o usuário da transmissão e o retorna para tela inicial
+   */
   async disconnect() {
     let rtcConnection = this.mapPeerConnection.get(this.connectionId);
 
+    // Neste ponto chama o serviço de sinalização para remover o usuário da conexão
     await this.signalrService.RemoveUser(this.connectionId ?? "");
 
-    rtcConnection?.close();
+    rtcConnection?.close(); // Fecha a conexão do WebRTC
     this.mapPeerConnection.delete(this.connectionId);
-    // this.signalrService.invokeSignalrMethod("Send", JSON.stringify({ "action": "close" }));
     this.router.navigate(['/home']);
   }
 
+  /**
+   * Realiza toda a reconexão para buscar um novo usuário disponível
+   */
   async nextPeer() {
     let rtcConnection = this.mapPeerConnection.get(this.connectionId);
-    this.remoteConnectionId = null;
+    this.remoteConnectionId = null; // Retira o usuário anterior do remoteConnectionId
 
     rtcConnection?.close();
     this.mapPeerConnection.delete(this.connectionId);
@@ -237,7 +248,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Método que se encarrega de enviar um array de mensagens enviadas para o HTML
+   * Método que se encarrega de enviar um array de mensagens enviadas para o servidor e o HTML
    */
   async sendMessage() {
     if (this.newMessage.trim() !== '') {
