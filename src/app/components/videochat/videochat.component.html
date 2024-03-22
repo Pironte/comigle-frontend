@@ -22,9 +22,15 @@
         <div class="user1-camera">
             <video id="user1" class="userCamera" autoplay playsinline></video>
         </div>
-        <div class="user2-camera">
-            <video id="remote" class="userCamera" autoplay playsinline></video>
-        </div>
+        @if(isBackGroundWaiting){
+            <div class="user2-camera">
+                <img style="background-color: black;" class="userCamera" src="assets/gif/Animacao_Comigle.gif">
+            </div>
+        }@else {
+            <div class="user2-camera">
+                <video id="remote" class="userCamera" autoplay playsinline></video>
+            </div>
+        }
     </div>
     <div class="chat">
         <div id="chatContainer" class="chat-container">

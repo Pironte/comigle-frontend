@@ -25,6 +25,8 @@ export class VideochatComponent implements OnInit, OnDestroy {
   isDisableChat = signal<boolean>(true);
   isNextPeerDisable: boolean = false;
 
+  isBackGroundWaiting: boolean = true;
+
   mapPeerConnection = new Map<string | null, RTCPeerConnection>();
 
   constructor(public authService: AuthenticationServiceService, public signalrService: SignalrService, private router: Router, private ngZone: NgZone) {
@@ -76,6 +78,10 @@ export class VideochatComponent implements OnInit, OnDestroy {
         // Adiciona o track recebido ao MediaStream
         remoteStream.addTrack(event.track);
 
+        this.ngZone.run(() => {
+          this.isBackGroundWaiting = false;
+        });
+
         // Agora você pode usar esse MediaStream para exibir o vídeo
         var remoteVideo = document.getElementById('remote') as HTMLVideoElement;
         remoteVideo.srcObject = remoteStream;
@@ -118,6 +124,7 @@ export class VideochatComponent implements OnInit, OnDestroy {
           this.ngZone.run(() => {
             this.messages = [];
             this.isDisableChat.set(true);
+            this.isBackGroundWaiting = true;
           });
 
           rtcConnection.restartIce();
@@ -224,6 +231,9 @@ export class VideochatComponent implements OnInit, OnDestroy {
    * Realiza toda a reconexão para buscar um novo usuário disponível
    */
   async nextPeer() {
+    this.ngZone.run(() => {
+      this.isBackGroundWaiting = true;
+    });
     let rtcConnection = this.mapPeerConnection.get(this.connectionId);
     this.remoteConnectionId = null; // Retira o usuário anterior do remoteConnectionId
 

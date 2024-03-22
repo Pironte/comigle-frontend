@@ -21,26 +21,86 @@
 }
 
 .header-container .header-text {
-    position: absolute;
+    // position: absolute;
     left: 46%;
     top: 40%;
 }
 
+// .camera-container {
+//     display: flex;
+//     justify-content: center;
+//     margin: 20px;
+//     height: 50vh;
+//     width: 100%;
+// }
+
+// @media only screen and (max-width: 600px) {
+//     .camera-container {
+//        display: flex;
+//        flex-direction: column;
+//        align-items: center;
+//     }
+// }
+
+// .user1-camera {
+//     // margin-right: 25px;
+// }
+
+// .user2-camera {
+//     margin-left: 25px;
+// }
+
+// .userCamera {
+//     width: 100%;
+//     height: 100%;
+//     border: 2px solid #ccc;
+//     border-radius: 15px;
+// }
+
 .camera-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    margin: 20px;
-    height: 50vh;
+    gap: 20px;
+    padding: 20px;
+    /* Espaço entre os vídeos */
 }
 
-.user1-camera {
-    margin-right: 50px;
+.user-camera,
+.user1-camera,
+.user2-camera {
+    flex: 1;
+    /* Permite que os filhos da camera-container cresçam igualmente */
+    min-width: 300px;
+    /* Define uma largura mínima para os elementos */
+    max-width: 100%;
+    /* Garante que os elementos não ultrapassem a largura do contêiner */
 }
 
 .userCamera {
     width: 100%;
-    height: 100%;
-    border: 1px solid #ccc;
+    /* Faz o vídeo/img preencher totalmente o contêiner */
+    aspect-ratio: 16 / 9;
+
+    border: 2px solid white;
+    border-radius: 15px;
+    /* Mantém uma proporção fixa */
+    // background-color: black;
+    /* Fundo preto para os vídeos */
+}
+
+/* Estilos adicionais para ajustar a responsividade com base no tamanho da tela */
+@media only screen and (max-width: 600px) {
+    .user-camera,
+    .user1-camera,
+    .user2-camera {
+        min-width: 100%;
+        /* Torna os vídeos/imgs em blocos de largura total em telas pequenas */
+    }
+}
+
+video {
+    object-fit: cover;
 }
 
 .chat {
@@ -55,7 +115,8 @@
     margin-top: 18px;
     width: 40%;
     height: 11vh;
-    border: 1px solid #ccc;
+    border: 4px solid #ccc;
+    border-radius: 15px;
     padding: 10px;
     background-color: #bebfd4;
     overflow-y: scroll;
@@ -63,19 +124,23 @@
 
 /* Personalizações para WebKit/Blink (Chrome, Safari, Edge) */
 .chat-container::-webkit-scrollbar {
-    width: 10px; /* Largura da barra de rolagem */
+    width: 10px;
+    /* Largura da barra de rolagem */
 }
 
 .chat-container::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Cor de fundo da trilha da barra de rolagem */
+    background: #f1f1f1;
+    /* Cor de fundo da trilha da barra de rolagem */
 }
 
 .chat-container::-webkit-scrollbar-thumb {
-    background: #888; /* Cor da barra de rolagem */
+    background: #888;
+    /* Cor da barra de rolagem */
 }
 
 .chat-container::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Cor da barra de rolagem ao passar o mouse */
+    background: #555;
+    /* Cor da barra de rolagem ao passar o mouse */
 }
 
 .chat-box {
@@ -99,7 +164,7 @@
     color: white;
     border-radius: 20px;
     cursor: pointer;
-    position: absolute;
+    // position: absolute;
     height: 80%;
     right: 32%;
     top: 22%;
@@ -149,7 +214,7 @@
     color: white;
     border-radius: 20px;
     cursor: pointer;
-    position: absolute;
+    // position: absolute;
     height: 80%;
     right: 66%;
     top: 22%;
