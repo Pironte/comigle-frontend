@@ -72,15 +72,14 @@ export class VideochatComponent implements OnInit, OnDestroy {
         let remoteStream!: MediaStream;
 
         if (event.streams[0]) {
+          this.ngZone.run(() => {
+            this.isBackGroundWaiting = false;
+          });
           remoteStream = event.streams[0];
         }
 
         // Adiciona o track recebido ao MediaStream
         remoteStream.addTrack(event.track);
-
-        this.ngZone.run(() => {
-          this.isBackGroundWaiting = false;
-        });
 
         // Agora você pode usar esse MediaStream para exibir o vídeo
         var remoteVideo = document.getElementById('remote') as HTMLVideoElement;
